@@ -361,7 +361,6 @@ export function App() {
 
   const blockingCount = evaluatedItems.filter(i => i.isBlocking).length;
   const okCount = evaluatedItems.filter(i => i.status === 'OK').length;
-  const complianceRate = Math.round((okCount / (evaluatedItems.length || 1)) * 100);
 
   return (
     <div className="min-h-screen bg-[#060a14] text-slate-100 flex flex-col font-sans selection:bg-emerald-500 selection:text-white relative overflow-x-hidden">
@@ -400,10 +399,8 @@ export function App() {
           <TenderSummary tender={tenderData.tender} lang={lang} />
 
           {/* Workflow Cockpit Tabs Bar */}
-          <div className="flex items-center justify-between flex-wrap gap-3 p-2 bg-[#0c1326]/90 border border-slate-800 rounded-2xl backdrop-blur-xl shadow-xl">
-            <div className="flex items-center gap-2 w-full sm:w-auto overflow-x-auto py-0.5">
-              
-              {/* Tab 1: Documents & Checklist */}
+          <div className="inline-flex items-center gap-2 p-1.5 bg-[#0c1326]/90 border border-slate-800 rounded-2xl backdrop-blur-xl shadow-xl max-w-full overflow-x-auto">
+            {/* Tab 1: Documents & Checklist */}
               <button
                 onClick={() => setActiveTab('checklist')}
                 className={`group relative flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 active:scale-95 border ${
@@ -485,38 +482,6 @@ export function App() {
                 )}
               </button>
             </div>
-
-            {/* Executive Compliance Capsule on Right */}
-            <div className="hidden lg:flex items-center gap-3 bg-slate-950/70 border border-slate-800/90 rounded-xl px-3.5 py-1.5 shadow-inner">
-              <div className="flex flex-col">
-                <div className="flex items-center justify-between text-[10px] text-slate-400 uppercase tracking-wider font-semibold">
-                  <span>{t.complianceScore}</span>
-                  <span className={`font-mono font-bold ml-3 ${
-                    complianceRate === 100 ? 'text-emerald-400' : complianceRate > 50 ? 'text-amber-400' : 'text-slate-200'
-                  }`}>
-                    {complianceRate}%
-                  </span>
-                </div>
-                <div className="w-28 h-1.5 bg-slate-800 rounded-full overflow-hidden mt-1">
-                  <div 
-                    className={`h-full transition-all duration-300 rounded-full ${
-                      complianceRate === 100 
-                        ? 'bg-gradient-to-r from-emerald-500 to-teal-400' 
-                        : 'bg-gradient-to-r from-amber-500 to-emerald-500'
-                    }`}
-                    style={{ width: `${complianceRate}%` }}
-                  />
-                </div>
-              </div>
-              <div className="shrink-0 pl-1">
-                {complianceRate === 100 ? (
-                  <span className="flex h-2.5 w-2.5 rounded-full bg-emerald-400 animate-pulse shadow-md shadow-emerald-400/50" />
-                ) : (
-                  <span className="flex h-2.5 w-2.5 rounded-full bg-amber-400" />
-                )}
-              </div>
-            </div>
-          </div>
 
           {/* TAB 1: Documents & Checklist Workspace */}
           {activeTab === 'checklist' && (
