@@ -1,0 +1,76 @@
+# ==========================================
+# AI Agent Skills, Tools & Harness Caches
+# ==========================================
+.agents/skills/
+.agents/mcp_config.json
+.agent/
+.gemini/
+.cursor/
+.claude/
+.codex/
+.21st/
+.mcp.json
+skills-lock.json
+verify-21st-mcp.mjs
+
+# Keep rules tracked if present
+!.agents/rules/
+
+# ==========================================
+# Dependencies & Package Managers
+# ==========================================
+node_modules/
+__pycache__/
+*.pyc
+/.pnp
+.pnp.js
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnpm-store
+
+# ==========================================
+# Production & Build Artifacts
+# ==========================================
+dist/
+dist-ssr/
+build/
+out/
+.next/
+.turbo/
+.cache/
+*.tsbuildinfo
+gptdemo/
+
+# ==========================================
+# Environment Variables & Secrets
+# ==========================================
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.pem
+
+# ==========================================
+# Logs & Runtime
+# ==========================================
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+*.log
+
+# ==========================================
+# OS & Editor Files
+# ==========================================
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json

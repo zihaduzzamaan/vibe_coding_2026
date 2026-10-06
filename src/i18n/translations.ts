@@ -1,0 +1,216 @@
+import { Language } from '../types/tender';
+
+export const translations = {
+  en: {
+    appTitle: "Tender Document Package Builder",
+    appSubtitle: "AI DevFest 2026 — Verification & Master Package Assembly Engine",
+    tenderOverview: "Tender Overview",
+    tenderId: "Tender ID",
+    procuringEntity: "Procuring Entity",
+    bidder: "Bidder Name",
+    deadline: "Submission Deadline",
+    loadSample: "Load Sample Tender",
+    uploadRequirements: "Upload requirements.json",
+    resetAll: "Reset All",
+    statusFilterAll: "All Documents",
+    statusFilterBlocking: "Blocking Only",
+    statusFilterOk: "Valid (OK)",
+    
+    // Checklist headers
+    order: "Order",
+    documentTitle: "Document Requirement",
+    mandatory: "Mandatory",
+    optional: "Optional",
+    matchedFile: "Matched PDF File",
+    pageCount: "Pages",
+    expiryDate: "Expiry Date",
+    status: "Status",
+    actions: "Actions",
+    
+    // Status badges
+    statusMissing: "Missing",
+    statusExpiryNeeded: "Expiry date needed",
+    statusExpired: "Expired",
+    statusNotProvided: "Not provided",
+    statusOk: "OK",
+    
+    // Reasons
+    reasonMissing: "Required document has no file matched.",
+    reasonExpiryNeeded: "Matched document requires an expiry date.",
+    reasonExpired: "Expiry date is before the submission deadline.",
+    reasonNotProvided: "Optional document, not provided.",
+    reasonOk: "Valid and compliant for submission.",
+    
+    // Upload Zone
+    uploadTitle: "Upload Tender PDF Documents",
+    uploadSubtitle: "Drag & drop your PDF documents here or click to browse (up to 30 files, 50MB)",
+    uploadedFiles: "Uploaded Files",
+    noFilesUploaded: "No PDF files uploaded yet. Drag files above to begin.",
+    nonPdfError: "File rejected! Non-PDF file detected:",
+    nonPdfHint: "Only PDF documents can be uploaded for tender compliance.",
+    duplicateBadge: "Duplicate Content",
+    duplicateWarning: "Exact duplicate of:",
+    duplicateProhibited: "Duplicate files cannot be matched to different checklist slots.",
+    removeFile: "Remove",
+    previewFile: "Preview",
+    unmatch: "Unmatch",
+    selectFileToMatch: "Select a file...",
+    autoMatchBtn: "Auto-Match Files",
+    autoMatchedSuccess: "Auto-matched files based on document name heuristics!",
+    
+    // Actions & Package
+    generateBtn: "Generate Package",
+    generating: "Assembling Master PDF...",
+    downloadBtn: "Download Master Package",
+    packageReady: "Package Ready for Submission!",
+    exportCsv: "Export Checklist (CSV)",
+    saveSession: "Save Session",
+    restoreSession: "Restore Session",
+    sessionSaved: "Session saved successfully to browser storage!",
+    
+    // Footer rules info
+    coverPageInfo: "Cover Page (English)",
+    coverPageDesc: "Page 1 displays tender metadata, bidder details, and ordered document index.",
+    runningFooterInfo: "Running Footer",
+    runningFooterDesc: "Every page receives the standard footer: <tender_id> | Page X of Y.",
+    
+    // Modal
+    close: "Close",
+    documentPreview: "Document Preview",
+    page: "Page",
+    of: "of",
+    
+    // Blocking summary
+    blockingBannerTitle: "Submission Blocked",
+    blockingBannerSubtitle: "The package cannot be generated until all blocking issues are resolved:",
+    allValidTitle: "Ready for Package Generation",
+    allValidSubtitle: "All mandatory documents are matched, non-expired, and verified.",
+    
+    // Stamp & Seal (Bonus)
+    stampTitle: "Company Seal / Stamp Placement (Bonus)",
+    stampUpload: "Upload Official Seal (PNG / JPG)",
+    stampPosition: "Stamp Position",
+    stampTargetPages: "Apply To",
+    stampOpacity: "Opacity",
+    stampSize: "Stamp Size",
+    stampEnabled: "Apply Official Seal to Package",
+    posBottomRight: "Bottom Right",
+    posBottomLeft: "Bottom Left",
+    posTopRight: "Top Right",
+    posBottomCenter: "Bottom Center",
+    pagesAllDocs: "All Document Pages",
+    pagesAll: "All Pages (incl. Cover)",
+    pagesLast: "Last Page of Package",
+    pagesCover: "Cover Page Only",
+    sampleLogo: "Use Sample Logo (company_logo.png)",
+    removeStamp: "Remove Seal",
+  },
+  bn: {
+    appTitle: "দরপত্র নথি প্যাকেজ প্রস্তুতকারক",
+    appSubtitle: "এআই ডেভফেস্ট ২০২৬ — যাচাইকরণ ও মাস্টার প্যাকেজ অ্যাসেম্বলি ইঞ্জিন",
+    tenderOverview: "দরপত্রের বিবরণ",
+    tenderId: "দরপত্র আইডি",
+    procuringEntity: "ক্রয়কারী কর্তৃপক্ষ",
+    bidder: "দরপত্রদাতার নাম",
+    deadline: "জমা দেওয়ার শেষ সময়",
+    loadSample: "নমুনা দরপত্র লোড করুন",
+    uploadRequirements: "requirements.json আপলোড",
+    resetAll: "সব রিসেট করুন",
+    statusFilterAll: "সকল নথি",
+    statusFilterBlocking: "ত্রুটিপূর্ণ নথি",
+    statusFilterOk: "বৈধ (ঠিক আছে)",
+    
+    // Checklist headers
+    order: "ক্রম",
+    documentTitle: "নথির বিবরণ",
+    mandatory: "বাধ্যতামূলক",
+    optional: "ঐচ্ছিক",
+    matchedFile: "সংযুক্ত পিডিএফ ফাইল",
+    pageCount: "পৃষ্ঠা",
+    expiryDate: "মেয়াদ উত্তীর্ণের তারিখ",
+    status: "অবস্থা",
+    actions: "অ্যাকশন",
+    
+    // Status badges
+    statusMissing: "অনুপস্থিত",
+    statusExpiryNeeded: "মেয়াদের তারিখ প্রয়োজন",
+    statusExpired: "মেয়াদোত্তীর্ণ",
+    statusNotProvided: "প্রদান করা হয়নি",
+    statusOk: "ঠিক আছে",
+    
+    // Reasons
+    reasonMissing: "বাধ্যতামূলক নথিতে কোনো ফাইল যুক্ত করা হয়নি।",
+    reasonExpiryNeeded: "সংযুক্ত নথির মেয়াদ উত্তীর্ণের তারিখ প্রদান করতে হবে।",
+    reasonExpired: "মেয়াদ উত্তীর্ণের তারিখ দরপত্র জমার শেষ তারিখের পূর্ববর্তী।",
+    reasonNotProvided: "ঐচ্ছিক নথি, প্রদান করা হয়নি।",
+    reasonOk: "বৈধ ও দরপত্র জমার জন্য সম্পূর্ণ উপযুক্ত।",
+    
+    // Upload Zone
+    uploadTitle: "দরপত্র সংক্রান্ত পিডিএফ ফাইল আপলোড করুন",
+    uploadSubtitle: "আপনার পিডিএফ ফাইলগুলো এখানে টেনে আনুন অথবা নির্বাচন করুন (সর্বোচ্চ ৩০টি ফাইল, ৫০ মেগাবাইট)",
+    uploadedFiles: "আপলোডকৃত ফাইলসমূহ",
+    noFilesUploaded: "এখনও কোনো ফাইল আপলোড করা হয়নি। উপরে ফাইল ড্রপ করুন।",
+    nonPdfError: "ফাইল বাতিল করা হয়েছে! অ-পিডিএফ ফাইল সনাক্ত হয়েছে:",
+    nonPdfHint: "দরপত্রের নিয়মানুযায়ী শুধুমাত্র পিডিএফ ফাইল আপলোড করা যাবে।",
+    duplicateBadge: "অনুরূপ/ডুপ্লিকেট ফাইল",
+    duplicateWarning: "এর হুবহু ডুপ্লিকেট কপি:",
+    duplicateProhibited: "একই ডুপ্লিকেট ফাইল একাধিক নথিতে যুক্ত করা যাবে না।",
+    removeFile: "মুছুন",
+    previewFile: "প্রিভিউ",
+    unmatch: "বাতিল করুন",
+    selectFileToMatch: "ফাইল নির্বাচন করুন...",
+    autoMatchBtn: "স্বয়ংক্রিয় ম্যাচিং",
+    autoMatchedSuccess: "নথির নামের উপর ভিত্তি করে স্বয়ংক্রিয়ভাবে ম্যাচ করা হয়েছে!",
+    
+    // Actions & Package
+    generateBtn: "প্যাকেজ তৈরি করুন",
+    generating: "মাস্টার পিডিএফ তৈরি হচ্ছে...",
+    downloadBtn: "মাস্টার প্যাকেজ ডাউনলোড করুন",
+    packageReady: "প্যাকেজ প্রস্তুত!",
+    exportCsv: "চেকলিস্ট এক্সপোর্ট (CSV)",
+    saveSession: "সেশন সংরক্ষণ",
+    restoreSession: "সেশন ফিরিয়ে আনুন",
+    sessionSaved: "সেশন সফলভাবে ব্রাউজার মেমোরিতে সংরক্ষিত হয়েছে!",
+    
+    // Footer rules info
+    coverPageInfo: "কভার পেজ (ইংরেজি)",
+    coverPageDesc: "১ম পৃষ্ঠায় দরপত্রের তথ্য, বিডার বিবরণ এবং ক্রমবিন্যস্ত ইনডেক্স থাকবে।",
+    runningFooterInfo: "রানিং ফুটার",
+    runningFooterDesc: "প্রতিটি পৃষ্ঠার নিচে থাকবে: <tender_id> | Page X of Y।",
+    
+    // Modal
+    close: "বন্ধ করুন",
+    documentPreview: "নথি প্রিভিউ",
+    page: "পৃষ্ঠা",
+    of: "এর",
+    
+    // Blocking summary
+    blockingBannerTitle: "প্যাকেজ তৈরি স্থগিত আছে",
+    blockingBannerSubtitle: "সবগুলো সমস্যা সমাধান না হওয়া পর্যন্ত চূড়ান্ত প্যাকেজ তৈরি করা যাবে না:",
+    allValidTitle: "প্যাকেজ তৈরির জন্য সম্পূর্ণ প্রস্তুত",
+    allValidSubtitle: "সকল বাধ্যতামূলক নথি যুক্ত, মেয়াদোত্তীর্ণ নয় এবং যথাযথভাবে যাচাইকৃত।",
+    
+    // Stamp & Seal (Bonus)
+    stampTitle: "কোম্পানির অফিসিয়াল সিল / স্ট্যাম্প স্থাপন (বোনাস)",
+    stampUpload: "অফিসিয়াল সিলের ছবি আপলোড করুন (PNG / JPG)",
+    stampPosition: "সিলের অবস্থান",
+    stampTargetPages: "প্রয়োগের স্থান",
+    stampOpacity: "স্বচ্ছতা (Opacity)",
+    stampSize: "সিলের আকার",
+    stampEnabled: "মাস্টার প্যাকেজে সিল সংযুক্ত করুন",
+    posBottomRight: "নিচে ডানে",
+    posBottomLeft: "নিচে বামে",
+    posTopRight: "উপরে ডানে",
+    posBottomCenter: "নিচে মাঝে",
+    pagesAllDocs: "সকল নথির পৃষ্ঠায়",
+    pagesAll: "সকল পৃষ্ঠায় (কভারসহ)",
+    pagesLast: "প্যাকেজের শেষ পৃষ্ঠায়",
+    pagesCover: "শুধুমাত্র কভার পেজে",
+    sampleLogo: "নমুনা লোগো ব্যবহার করুন (company_logo.png)",
+    removeStamp: "সিল মুছুন",
+  }
+};
+
+export function getT(lang: Language) {
+  return translations[lang];
+}
