@@ -9,7 +9,7 @@ import { PdfPreviewModal } from './components/PdfPreviewModal';
 import { StampPanel } from './components/StampPanel';
 import { MasterActionDock } from './components/MasterActionDock';
 import MovingGrid from './components/ui/hyper-grid';
-import { FileText, Stamp, CheckCircle2 } from 'lucide-react';
+import { FileText, Stamp, CheckCircle2, AlertTriangle, Check } from 'lucide-react';
 import { getT } from './i18n/translations';
 import { SAMPLE_REQUIREMENTS } from './data/defaultRequirements';
 import {
@@ -361,6 +361,7 @@ export function App() {
 
   const blockingCount = evaluatedItems.filter(i => i.isBlocking).length;
   const okCount = evaluatedItems.filter(i => i.status === 'OK').length;
+  const complianceRate = Math.round((okCount / (evaluatedItems.length || 1)) * 100);
 
   return (
     <div className="min-h-screen bg-[#060a14] text-slate-100 flex flex-col font-sans selection:bg-emerald-500 selection:text-white relative overflow-x-hidden">
@@ -398,23 +399,30 @@ export function App() {
           {/* Executive Tender Overview Briefing */}
           <TenderSummary tender={tenderData.tender} lang={lang} />
 
-          {/* Workflow Cockpit Tabs */}
-          <div className="flex items-center justify-between flex-wrap gap-2 p-1.5 bg-slate-900/90 border border-slate-800/90 rounded-2xl backdrop-blur-xl shadow-lg">
-            <div className="flex items-center gap-1.5 w-full sm:w-auto overflow-x-auto py-0.5">
+          {/* Workflow Cockpit Tabs Bar */}
+          <div className="flex items-center justify-between flex-wrap gap-3 p-2 bg-[#0c1326]/90 border border-slate-800 rounded-2xl backdrop-blur-xl shadow-xl">
+            <div className="flex items-center gap-2 w-full sm:w-auto overflow-x-auto py-0.5">
               
               {/* Tab 1: Documents & Checklist */}
               <button
                 onClick={() => setActiveTab('checklist')}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all active:scale-95 ${
+                className={`group relative flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 active:scale-95 border ${
                   activeTab === 'checklist'
-                    ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-md shadow-emerald-500/20'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+                    ? 'bg-slate-800/95 border-emerald-500/50 text-white shadow-lg shadow-emerald-950/40 ring-1 ring-emerald-500/30'
+                    : 'bg-slate-950/40 border-slate-800/80 text-slate-300 hover:text-white hover:bg-slate-800 hover:border-slate-700'
                 }`}
               >
-                <FileText className="w-4 h-4" />
+                <span className={`px-1.5 py-0.5 rounded text-[10px] font-mono font-bold ${
+                  activeTab === 'checklist' ? 'bg-emerald-500/20 text-emerald-300' : 'bg-slate-800 text-slate-400 group-hover:text-slate-300'
+                }`}>
+                  01
+                </span>
+                <FileText className={`w-4 h-4 ${activeTab === 'checklist' ? 'text-emerald-400' : 'text-emerald-400/80'}`} />
                 <span>{t.tabDocuments}</span>
-                <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-mono ${
-                  activeTab === 'checklist' ? 'bg-white/20 text-white' : 'bg-slate-800 text-slate-400'
+                <span className={`px-2 py-0.5 rounded-md text-[11px] font-mono font-bold border transition-colors ${
+                  okCount === evaluatedItems.length && evaluatedItems.length > 0
+                    ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
+                    : 'bg-slate-800/90 text-slate-200 border-slate-700/80'
                 }`}>
                   {okCount}/{evaluatedItems.length}
                 </span>
@@ -423,44 +431,90 @@ export function App() {
               {/* Tab 2: Seal & Watermark */}
               <button
                 onClick={() => setActiveTab('seal')}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all active:scale-95 ${
+                className={`group relative flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 active:scale-95 border ${
                   activeTab === 'seal'
-                    ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md shadow-indigo-500/20'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+                    ? 'bg-slate-800/95 border-indigo-500/50 text-white shadow-lg shadow-indigo-950/40 ring-1 ring-indigo-500/30'
+                    : 'bg-slate-950/40 border-slate-800/80 text-slate-300 hover:text-white hover:bg-slate-800 hover:border-slate-700'
                 }`}
               >
-                <Stamp className="w-4 h-4" />
+                <span className={`px-1.5 py-0.5 rounded text-[10px] font-mono font-bold ${
+                  activeTab === 'seal' ? 'bg-indigo-500/20 text-indigo-300' : 'bg-slate-800 text-slate-400 group-hover:text-slate-300'
+                }`}>
+                  02
+                </span>
+                <Stamp className={`w-4 h-4 ${activeTab === 'seal' ? 'text-indigo-400' : 'text-indigo-400/80'}`} />
                 <span>{t.tabSeal}</span>
-                {stampConfig && (
-                  <span className="w-2 h-2 rounded-full bg-indigo-400 ring-2 ring-indigo-400/40" />
+                {stampConfig ? (
+                  <span className="px-2 py-0.5 rounded-md text-[10px] font-medium bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 flex items-center gap-1 font-mono">
+                    <span className="w-1.5 h-1.5 rounded-full bg-indigo-400" />
+                    {t.tabAttached}
+                  </span>
+                ) : (
+                  <span className="px-2 py-0.5 rounded-md text-[10px] font-medium bg-slate-800/80 text-slate-400 border border-slate-700/60 font-mono">
+                    {t.tabOptional}
+                  </span>
                 )}
               </button>
 
               {/* Tab 3: Compliance & Package Review */}
               <button
                 onClick={() => setActiveTab('review')}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all active:scale-95 ${
+                className={`group relative flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 active:scale-95 border ${
                   activeTab === 'review'
-                    ? 'bg-gradient-to-r from-sky-600 to-cyan-600 text-white shadow-md shadow-sky-500/20'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+                    ? 'bg-slate-800/95 border-sky-500/50 text-white shadow-lg shadow-sky-950/40 ring-1 ring-sky-500/30'
+                    : 'bg-slate-950/40 border-slate-800/80 text-slate-300 hover:text-white hover:bg-slate-800 hover:border-slate-700'
                 }`}
               >
-                <CheckCircle2 className="w-4 h-4" />
+                <span className={`px-1.5 py-0.5 rounded text-[10px] font-mono font-bold ${
+                  activeTab === 'review' ? 'bg-sky-500/20 text-sky-300' : 'bg-slate-800 text-slate-400 group-hover:text-slate-300'
+                }`}>
+                  03
+                </span>
+                <CheckCircle2 className={`w-4 h-4 ${activeTab === 'review' ? 'text-sky-400' : 'text-sky-400/80'}`} />
                 <span>{t.tabAudit}</span>
-                {blockingCount > 0 && (
-                  <span className="px-1.5 py-0.2 rounded-full text-[10px] font-mono bg-rose-500/20 text-rose-300 border border-rose-500/30">
+                {blockingCount > 0 ? (
+                  <span className="px-2 py-0.5 rounded-md text-[11px] font-mono font-bold bg-rose-500/20 text-rose-300 border border-rose-500/40 flex items-center gap-1 shadow-sm">
+                    <AlertTriangle className="w-3 h-3 text-rose-400" />
                     {blockingCount}
+                  </span>
+                ) : (
+                  <span className="px-2 py-0.5 rounded-md text-[11px] font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 flex items-center gap-1">
+                    <Check className="w-3 h-3 text-emerald-400" />
+                    {t.tabPass}
                   </span>
                 )}
               </button>
             </div>
 
-            {/* Live Readiness Pill on Desktop */}
-            <div className="hidden lg:flex items-center gap-3 text-xs font-mono pr-2">
-              <span className="text-slate-400">Compliance Rate:</span>
-              <span className={`font-bold ${okCount === evaluatedItems.length ? 'text-emerald-400' : 'text-amber-400'}`}>
-                {Math.round((okCount / (evaluatedItems.length || 1)) * 100)}%
-              </span>
+            {/* Executive Compliance Capsule on Right */}
+            <div className="hidden lg:flex items-center gap-3 bg-slate-950/70 border border-slate-800/90 rounded-xl px-3.5 py-1.5 shadow-inner">
+              <div className="flex flex-col">
+                <div className="flex items-center justify-between text-[10px] text-slate-400 uppercase tracking-wider font-semibold">
+                  <span>{t.complianceScore}</span>
+                  <span className={`font-mono font-bold ml-3 ${
+                    complianceRate === 100 ? 'text-emerald-400' : complianceRate > 50 ? 'text-amber-400' : 'text-slate-200'
+                  }`}>
+                    {complianceRate}%
+                  </span>
+                </div>
+                <div className="w-28 h-1.5 bg-slate-800 rounded-full overflow-hidden mt-1">
+                  <div 
+                    className={`h-full transition-all duration-300 rounded-full ${
+                      complianceRate === 100 
+                        ? 'bg-gradient-to-r from-emerald-500 to-teal-400' 
+                        : 'bg-gradient-to-r from-amber-500 to-emerald-500'
+                    }`}
+                    style={{ width: `${complianceRate}%` }}
+                  />
+                </div>
+              </div>
+              <div className="shrink-0 pl-1">
+                {complianceRate === 100 ? (
+                  <span className="flex h-2.5 w-2.5 rounded-full bg-emerald-400 animate-pulse shadow-md shadow-emerald-400/50" />
+                ) : (
+                  <span className="flex h-2.5 w-2.5 rounded-full bg-amber-400" />
+                )}
+              </div>
             </div>
           </div>
 

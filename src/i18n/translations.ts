@@ -127,9 +127,13 @@ export const translations = {
     clickToApply: "Click to apply suggested date",
 
     // Workflow tabs & Floating Action Dock
-    tabDocuments: "1. Documents & Checklist",
-    tabSeal: "2. Official Seal & Watermark",
-    tabAudit: "3. Compliance & Package Review",
+    tabDocuments: "Documents & Checklist",
+    tabSeal: "Official Seal & Watermark",
+    tabAudit: "Compliance & Package Review",
+    tabOptional: "Optional",
+    tabAttached: "Attached",
+    tabPass: "Pass",
+    complianceScore: "Compliance Score",
     dockReady: "Ready to Generate",
     dockBlocked: "Issues Blocking",
     dockPages: "pages",
@@ -264,9 +268,13 @@ export const translations = {
     clickToApply: "সনাক্তকৃত তারিখ বসাতে ক্লিক করুন",
 
     // Workflow tabs & Floating Action Dock
-    tabDocuments: "১. নথিপত্র ও চেকলিস্ট",
-    tabSeal: "২. অফিসিয়াল সিল ও ওয়াটারমার্ক",
-    tabAudit: "৩. কমপ্লায়েন্স ও প্যাকেজ প্রিভিউ",
+    tabDocuments: "নথিপত্র ও চেকলিস্ট",
+    tabSeal: "অফিসিয়াল সিল ও ওয়াটারমার্ক",
+    tabAudit: "কমপ্লায়েন্স ও প্যাকেজ প্রিভিউ",
+    tabOptional: "ঐচ্ছিক",
+    tabAttached: "সংযুক্ত",
+    tabPass: "যাচাইকৃত",
+    complianceScore: "কমপ্লায়েন্স রেট",
     dockReady: "প্যাকেজ তৈরির জন্য প্রস্তুত",
     dockBlocked: "সমাধান আবশ্যক",
     dockPages: "পৃষ্ঠা",
