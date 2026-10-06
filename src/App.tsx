@@ -7,6 +7,10 @@ import { ChecklistTable } from './components/ChecklistTable';
 import { StatusBanner } from './components/StatusBanner';
 import { PdfPreviewModal } from './components/PdfPreviewModal';
 import { StampPanel } from './components/StampPanel';
+import { MasterActionDock } from './components/MasterActionDock';
+import MovingGrid from './components/ui/hyper-grid';
+import { FileText, Stamp, CheckCircle2 } from 'lucide-react';
+import { getT } from './i18n/translations';
 import { SAMPLE_REQUIREMENTS } from './data/defaultRequirements';
 import {
   RequirementsData,
@@ -26,6 +30,7 @@ import { saveMatchesToStorage, loadMatchesFromStorage, clearMatchesFromStorage }
 
 export function App() {
   const [lang, setLang] = useState<Language>('en');
+  const [activeTab, setActiveTab] = useState<'checklist' | 'seal' | 'review'>('checklist');
   const [tenderData, setTenderData] = useState<RequirementsData>(SAMPLE_REQUIREMENTS);
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
   const [matches, setMatches] = useState<Record<string, { fileId?: string; expiryDate?: string }>>({});
@@ -37,6 +42,7 @@ export function App() {
   const [stampConfig, setStampConfig] = useState<StampConfig | null>(null);
 
   const jsonInputRef = useRef<HTMLInputElement>(null);
+  const t = getT(lang);
 
   // Restore saved matches from localStorage on mount if available
   useEffect(() => {
@@ -63,230 +69,222 @@ export function App() {
     for (const file of filesArray) {
       // Rule 4.2: If file is not PDF, reject immediately
       if (!file.name.toLowerCase().endsWith('.pdf') && file.type !== 'application/pdf') {
-        newErrors.push(file.name);
+        newErrors.push(`Rejected "${file.name}": Only valid PDF files are permitted.`);
         continue;
       }
 
-      // Check if file with same name and size is already uploaded in state
-      if (uploadedFiles.some(f => f.name === file.name && f.size === file.size)) {
-        continue;
+      try {
+        const hash = await computeFileHash(file);
+        const inspection = await inspectPdf(file);
+
+        if (inspection.error) {
+          newErrors.push(`Rejected "${file.name}": ${inspection.error}`);
+          continue;
+        }
+
+        const newUploadedFile: UploadedFile = {
+          id: `${file.name}-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`,
+          file,
+          name: file.name,
+          size: file.size,
+          pageCount: inspection.pageCount,
+          hash,
+          isDuplicate: false,
+          extractedText: inspection.extractedText,
+          detectedExpiryDate: inspection.detectedExpiryDate,
+        };
+
+        validProcessedFiles.push(newUploadedFile);
+      } catch (err: any) {
+        newErrors.push(`Failed to read "${file.name}": ${err.message || 'Corrupt PDF'}`);
       }
-
-      // Calculate SHA-256 hash for exact duplicate detection (Rule 4.6)
-      const hash = await computeFileHash(file);
-
-      // Inspect PDF: count pages and scan text for dates
-      const inspection = await inspectPdf(file);
-
-      if (!inspection.isPdf) {
-        newErrors.push(`${file.name} (${inspection.error || 'Invalid PDF structure'})`);
-        continue;
-      }
-
-      const fileObj: UploadedFile = {
-        id: `file_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`,
-        file,
-        name: file.name,
-        size: file.size,
-        pageCount: inspection.pageCount,
-        hash,
-        isDuplicate: false,
-        isPdf: true,
-        detectedExpiryDate: inspection.detectedExpiryDate,
-      };
-
-      validProcessedFiles.push(fileObj);
     }
 
     if (newErrors.length > 0) {
       setNonPdfErrors(prev => [...prev, ...newErrors]);
     }
 
-    // Evaluate duplicates across all files (both previously uploaded and new)
-    const combinedFiles = [...uploadedFiles, ...validProcessedFiles];
-    const hashToFirstFile = new Map<string, UploadedFile>();
+    if (validProcessedFiles.length > 0) {
+      setUploadedFiles(prev => {
+        const combined = [...prev, ...validProcessedFiles];
 
-    const updatedWithDuplicateFlags = combinedFiles.map(f => {
-      if (hashToFirstFile.has(f.hash)) {
-        const first = hashToFirstFile.get(f.hash)!;
-        return {
-          ...f,
-          isDuplicate: true,
-          duplicateOfName: first.name,
-        };
-      } else {
-        hashToFirstFile.set(f.hash, f);
-        return {
-          ...f,
-          isDuplicate: false,
-          duplicateOfName: undefined,
-        };
-      }
-    });
+        // Rule 4.6: Find exact duplicates by sha-256 hash
+        const hashMap = new Map<string, string[]>();
+        combined.forEach(f => {
+          const list = hashMap.get(f.hash) || [];
+          list.push(f.id);
+          hashMap.set(f.hash, list);
+        });
 
-    setUploadedFiles(updatedWithDuplicateFlags);
+        return combined.map(f => {
+          const duplicates = (hashMap.get(f.hash) || []).filter(id => id !== f.id);
+          return {
+            ...f,
+            isDuplicate: duplicates.length > 0,
+            duplicateOf: duplicates.length > 0 ? duplicates : undefined,
+          };
+        });
+      });
+    }
   };
 
   // Remove uploaded file
   const handleRemoveFile = (fileId: string) => {
-    setUploadedFiles(prev => prev.filter(f => f.id !== fileId));
-    // Clear any matches using this file
+    setUploadedFiles(prev => {
+      const remaining = prev.filter(f => f.id !== fileId);
+
+      // Re-evaluate duplicates
+      const hashMap = new Map<string, string[]>();
+      remaining.forEach(f => {
+        const list = hashMap.get(f.hash) || [];
+        list.push(f.id);
+        hashMap.set(f.hash, list);
+      });
+
+      return remaining.map(f => {
+        const duplicates = (hashMap.get(f.hash) || []).filter(id => id !== f.id);
+        return {
+          ...f,
+          isDuplicate: duplicates.length > 0,
+          duplicateOf: duplicates.length > 0 ? duplicates : undefined,
+        };
+      });
+    });
+
+    // Unmatch if file was matched
     setMatches(prev => {
       const next = { ...prev };
       Object.keys(next).forEach(reqId => {
         if (next[reqId]?.fileId === fileId) {
-          delete next[reqId];
+          next[reqId] = { ...next[reqId], fileId: undefined };
         }
       });
       return next;
     });
   };
 
-  // 1-to-1 Match assignment (Rule 4.3)
-  const handleMatchFile = (requirementId: string, fileId: string) => {
-    const targetFile = uploadedFiles.find(f => f.id === fileId);
-
-    // Rule 4.6: If the file is a duplicate of an already matched file, alert or prevent
-    if (targetFile?.isDuplicate) {
-      const originalFile = uploadedFiles.find(f => f.name === targetFile.duplicateOfName && !f.isDuplicate);
-      const isOriginalMatched = Object.values(matches).some(m => m.fileId === originalFile?.id);
-      if (isOriginalMatched) {
-        alert(`Cannot match duplicate file "${targetFile.name}". Its identical counterpart "${targetFile.duplicateOfName}" is already matched!`);
-        return;
-      }
-    }
-
+  // Match file to requirement (Rule 4.3)
+  const handleMatchFile = (reqId: string, fileId: string) => {
+    // Check if file is already matched to another requirement: enforce 1-to-1 mapping
+    const matchedFile = uploadedFiles.find(f => f.id === fileId);
     setMatches(prev => {
       const next = { ...prev };
 
-      // Ensure 1-to-1: if this file was matched to another requirement, unmatch it first
-      Object.keys(next).forEach(rId => {
-        if (next[rId]?.fileId === fileId) {
-          delete next[rId];
+      // Free file if previously matched to another requirement
+      Object.keys(next).forEach(key => {
+        if (next[key]?.fileId === fileId && key !== reqId) {
+          next[key] = { ...next[key], fileId: undefined };
         }
       });
 
-      // Auto-prefill detected expiry date if available
-      let existingDate = prev[requirementId]?.expiryDate || targetFile?.detectedExpiryDate;
-      const targetReq = tenderData.requirements.find(r => r.id === requirementId);
-      if (!existingDate && targetReq?.has_expiry && targetFile) {
-        if (targetFile.name.includes('trade_license_2026')) existingDate = '2027-06-30';
-        else if (targetFile.name.includes('trade_license_2025')) existingDate = '2025-06-30';
-        else if (targetFile.name.includes('bank_solvency')) existingDate = '2026-12-31';
-      }
+      // Preserve existing expiryDate if user already typed it, otherwise auto-fill detectedExpiryDate
+      const existingDate = next[reqId]?.expiryDate;
+      const autoDate = matchedFile?.detectedExpiryDate;
 
-      next[requirementId] = {
+      next[reqId] = {
+        ...next[reqId],
         fileId,
-        expiryDate: existingDate,
+        expiryDate: existingDate || autoDate || undefined,
       };
-
       return next;
     });
   };
 
-  // Unmatch
-  const handleUnmatchFile = (requirementId: string) => {
-    setMatches(prev => {
-      const next = { ...prev };
-      delete next[requirementId];
-      return next;
-    });
-  };
-
-  // Update Expiry Date
-  const handleUpdateExpiryDate = (requirementId: string, date: string) => {
+  // Unmatch file from requirement
+  const handleUnmatchFile = (reqId: string) => {
     setMatches(prev => ({
       ...prev,
-      [requirementId]: {
-        ...prev[requirementId],
+      [reqId]: {
+        ...prev[reqId],
+        fileId: undefined,
+      },
+    }));
+  };
+
+  // Update expiry date (Rule 4.4)
+  const handleUpdateExpiryDate = (reqId: string, date: string) => {
+    setMatches(prev => ({
+      ...prev,
+      [reqId]: {
+        ...prev[reqId],
         expiryDate: date,
       },
     }));
   };
 
-  // Auto-Match Heuristics (Rule 4.3 & Bonus Auto-Match)
+  // 1-Click Smart Auto-Match (Fuzzy name & text similarity)
   const handleAutoMatch = () => {
-    const newMatches: Record<string, { fileId?: string; expiryDate?: string }> = { ...matches };
-    const usedFileIds = new Set(Object.values(matches).map(m => m.fileId).filter(Boolean));
-
-    // Name similarity lookup map
-    const keywordMap: Record<string, string[]> = {
-      R01: ['trade_license_2026', 'trade_license', 'trade'], // Pick valid 2026 over 2025
-      R02: ['tin_certificate', 'tin'],
-      R03: ['vat_certificate', 'vat'],
-      R04: ['bank_solvency', 'solvency', 'bank'],
-      R05: ['experience_cert.pdf', 'experience'], // Avoid duplicate (1)
-      R06: ['audited', 'financial_statement'],
-      R07: ['manufacturer', 'authorization'],
-      R08: ['technical_proposal', 'technical'],
-      R09: ['financial_proposal', 'financial'],
-      R10: ['declaration', 'scan_0042', 'scan'], // Identifies scan_0042 as declaration
-    };
+    const available = [...uploadedFiles];
+    const newMatches = { ...matches };
 
     tenderData.requirements.forEach(req => {
-      if (newMatches[req.id]?.fileId) return; // Already matched
+      // If already matched, skip
+      if (newMatches[req.id]?.fileId) return;
 
-      const keywords = keywordMap[req.id] || [req.title_en.toLowerCase()];
+      const titleEn = req.title_en.toLowerCase();
+      const keywords = titleEn.split(/\s+/).filter(w => w.length > 2);
 
-      for (const kw of keywords) {
-        // Find best non-duplicate match first
-        const candidate = uploadedFiles.find(f =>
-          !usedFileIds.has(f.id) &&
-          !f.isDuplicate &&
-          f.name.toLowerCase().includes(kw)
-        );
+      // Find best file candidate
+      const candidate = available.find(f => {
+        const fname = f.file.name.toLowerCase();
+        // Check filename matches keywords
+        return keywords.some(k => fname.includes(k));
+      });
 
-        if (candidate) {
-          usedFileIds.add(candidate.id);
-          let expiry = candidate.detectedExpiryDate || newMatches[req.id]?.expiryDate;
-          if (!expiry && req.has_expiry) {
-            if (candidate.name.includes('trade_license_2026')) expiry = '2027-06-30';
-            else if (candidate.name.includes('trade_license_2025')) expiry = '2025-06-30';
-            else if (candidate.name.includes('bank_solvency')) expiry = '2026-12-31';
-          }
-
-          newMatches[req.id] = {
-            fileId: candidate.id,
-            expiryDate: expiry,
-          };
-          break;
-        }
+      if (candidate) {
+        newMatches[req.id] = {
+          fileId: candidate.id,
+          expiryDate: candidate.detectedExpiryDate || newMatches[req.id]?.expiryDate,
+        };
+        // Remove from available to ensure 1-to-1
+        const idx = available.findIndex(a => a.id === candidate.id);
+        if (idx !== -1) available.splice(idx, 1);
       }
     });
 
     setMatches(newMatches);
   };
 
-  // Available files for matching (1-to-1: excludes files already matched)
-  const availableFiles = useMemo(() => {
-    const matchedFileIds = new Set(Object.values(matches).map(m => m.fileId).filter(Boolean));
-    return uploadedFiles.filter(f => !matchedFileIds.has(f.id));
-  }, [uploadedFiles, matches]);
-
-  // Evaluated status for each requirement (Section 5)
+  // Build evaluated items (Rules 4.5, 5.1 - 5.5)
   const evaluatedItems: EvaluationResult[] = useMemo(() => {
     return tenderData.requirements
+      .slice()
       .sort((a, b) => a.order - b.order)
       .map(req => {
-        const match = matches[req.id];
-        const matchedFile = uploadedFiles.find(f => f.id === match?.fileId);
+        const matchData = matches[req.id];
+        const matchedFile = uploadedFiles.find(f => f.id === matchData?.fileId);
         return evaluateRequirementStatus(
           req,
           matchedFile,
-          match?.expiryDate,
+          matchData?.expiryDate,
           tenderData.tender.submission_deadline
         );
       });
   }, [tenderData, matches, uploadedFiles]);
 
-  // Master PDF Generation (Section 6)
+  // Files available for matching
+  const availableFiles = useMemo(() => {
+    return uploadedFiles;
+  }, [uploadedFiles]);
+
+  // Master PDF Generation Engine (Rules 4.7, 4.8, Section 6)
   const handleGeneratePackage = async () => {
+    const blockingItems = evaluatedItems.filter(i => i.isBlocking);
+    if (blockingItems.length > 0) {
+      alert(`Cannot generate package: ${blockingItems.length} blocking issues detected.`);
+      return;
+    }
+
     try {
       setIsGenerating(true);
+
+      const itemsToInclude = evaluatedItems.filter(
+        item => item.matchedFile && item.status !== 'NOT_PROVIDED'
+      );
+
       const pdfBytes = await buildMasterPdfPackage({
         tender: tenderData.tender,
-        items: evaluatedItems,
-        includeIndexPage: true, // Bonus task Table of Contents
+        items: itemsToInclude,
         stampConfig: stampConfig || undefined,
       });
 
@@ -296,8 +294,8 @@ export function App() {
 
       // Trigger celebratory confetti!
       confetti({
-        particleCount: 80,
-        spread: 70,
+        particleCount: 90,
+        spread: 75,
         origin: { y: 0.6 },
       });
     } catch (err: any) {
@@ -344,9 +342,10 @@ export function App() {
     if (!file) return;
 
     const reader = new FileReader();
-    reader.onload = (event) => {
+    reader.onload = event => {
       try {
-        const parsed = JSON.parse(event.target?.result as string);
+        const text = event.target?.result as string;
+        const parsed = JSON.parse(text);
         if (!parsed.tender || !parsed.requirements) {
           throw new Error('Invalid schema: Missing "tender" or "requirements" field');
         }
@@ -360,88 +359,196 @@ export function App() {
     e.target.value = '';
   };
 
+  const blockingCount = evaluatedItems.filter(i => i.isBlocking).length;
+  const okCount = evaluatedItems.filter(i => i.status === 'OK').length;
+
   return (
-    <div className="min-h-screen bg-[#070b14] text-slate-100 flex flex-col font-sans selection:bg-emerald-500 selection:text-white">
-      {/* Hidden file input for custom requirements.json */}
-      <input
-        type="file"
-        ref={jsonInputRef}
-        accept=".json,application/json"
-        onChange={handleCustomRequirementsUpload}
-        className="hidden"
-      />
+    <div className="min-h-screen bg-[#060a14] text-slate-100 flex flex-col font-sans selection:bg-emerald-500 selection:text-white relative overflow-x-hidden">
+      
+      {/* HyperGrid 3D Animated Background */}
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden opacity-35">
+        <MovingGrid className="w-full h-full pointer-events-none !bg-transparent">
+          <div />
+        </MovingGrid>
+      </div>
 
-      {/* Header */}
-      <Header
-        lang={lang}
-        onToggleLang={() => setLang(l => (l === 'en' ? 'bn' : 'en'))}
-        tender={tenderData.tender}
-        onLoadSample={handleLoadSample}
-        onReset={handleReset}
-        onUploadRequirementsClick={() => jsonInputRef.current?.click()}
-      />
+      <div className="relative z-10 flex flex-col min-h-screen">
+        {/* Hidden file input for custom requirements.json */}
+        <input
+          type="file"
+          ref={jsonInputRef}
+          accept=".json,application/json"
+          onChange={handleCustomRequirementsUpload}
+          className="hidden"
+        />
 
-      {/* Main Container */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-        {/* Tender Overview Card */}
-        <TenderSummary tender={tenderData.tender} lang={lang} />
+        {/* Header */}
+        <Header
+          lang={lang}
+          onToggleLang={() => setLang(l => (l === 'en' ? 'bn' : 'en'))}
+          tender={tenderData.tender}
+          onLoadSample={handleLoadSample}
+          onReset={handleReset}
+          onUploadRequirementsClick={() => jsonInputRef.current?.click()}
+        />
 
-        {/* Upload Zone */}
-        <UploadZone
-          files={uploadedFiles}
-          onFilesSelected={handleFilesSelected}
-          onRemoveFile={handleRemoveFile}
-          onPreviewFile={setPreviewFile}
-          nonPdfErrors={nonPdfErrors}
-          onDismissNonPdfError={(idx) => setNonPdfErrors(prev => prev.filter((_, i) => i !== idx))}
+        {/* Main Content Workspace */}
+        <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6 pb-36">
+          
+          {/* Executive Tender Overview Briefing */}
+          <TenderSummary tender={tenderData.tender} lang={lang} />
+
+          {/* Workflow Cockpit Tabs */}
+          <div className="flex items-center justify-between flex-wrap gap-2 p-1.5 bg-slate-900/90 border border-slate-800/90 rounded-2xl backdrop-blur-xl shadow-lg">
+            <div className="flex items-center gap-1.5 w-full sm:w-auto overflow-x-auto py-0.5">
+              
+              {/* Tab 1: Documents & Checklist */}
+              <button
+                onClick={() => setActiveTab('checklist')}
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all active:scale-95 ${
+                  activeTab === 'checklist'
+                    ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-md shadow-emerald-500/20'
+                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+                }`}
+              >
+                <FileText className="w-4 h-4" />
+                <span>{t.tabDocuments}</span>
+                <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-mono ${
+                  activeTab === 'checklist' ? 'bg-white/20 text-white' : 'bg-slate-800 text-slate-400'
+                }`}>
+                  {okCount}/{evaluatedItems.length}
+                </span>
+              </button>
+
+              {/* Tab 2: Seal & Watermark */}
+              <button
+                onClick={() => setActiveTab('seal')}
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all active:scale-95 ${
+                  activeTab === 'seal'
+                    ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md shadow-indigo-500/20'
+                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+                }`}
+              >
+                <Stamp className="w-4 h-4" />
+                <span>{t.tabSeal}</span>
+                {stampConfig && (
+                  <span className="w-2 h-2 rounded-full bg-indigo-400 ring-2 ring-indigo-400/40" />
+                )}
+              </button>
+
+              {/* Tab 3: Compliance & Package Review */}
+              <button
+                onClick={() => setActiveTab('review')}
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all active:scale-95 ${
+                  activeTab === 'review'
+                    ? 'bg-gradient-to-r from-sky-600 to-cyan-600 text-white shadow-md shadow-sky-500/20'
+                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+                }`}
+              >
+                <CheckCircle2 className="w-4 h-4" />
+                <span>{t.tabAudit}</span>
+                {blockingCount > 0 && (
+                  <span className="px-1.5 py-0.2 rounded-full text-[10px] font-mono bg-rose-500/20 text-rose-300 border border-rose-500/30">
+                    {blockingCount}
+                  </span>
+                )}
+              </button>
+            </div>
+
+            {/* Live Readiness Pill on Desktop */}
+            <div className="hidden lg:flex items-center gap-3 text-xs font-mono pr-2">
+              <span className="text-slate-400">Compliance Rate:</span>
+              <span className={`font-bold ${okCount === evaluatedItems.length ? 'text-emerald-400' : 'text-amber-400'}`}>
+                {Math.round((okCount / (evaluatedItems.length || 1)) * 100)}%
+              </span>
+            </div>
+          </div>
+
+          {/* TAB 1: Documents & Checklist Workspace */}
+          {activeTab === 'checklist' && (
+            <div className="space-y-6">
+              <UploadZone
+                files={uploadedFiles}
+                onFilesSelected={handleFilesSelected}
+                onRemoveFile={handleRemoveFile}
+                onPreviewFile={setPreviewFile}
+                nonPdfErrors={nonPdfErrors}
+                onDismissNonPdfError={(idx) => setNonPdfErrors(prev => prev.filter((_, i) => i !== idx))}
+                lang={lang}
+              />
+
+              <ChecklistTable
+                items={evaluatedItems}
+                availableFiles={availableFiles}
+                onMatchFile={handleMatchFile}
+                onUnmatchFile={handleUnmatchFile}
+                onUpdateExpiryDate={handleUpdateExpiryDate}
+                onPreviewFile={setPreviewFile}
+                onAutoMatch={handleAutoMatch}
+                lang={lang}
+              />
+            </div>
+          )}
+
+          {/* TAB 2: Official Seal & Security Workspace */}
+          {activeTab === 'seal' && (
+            <div className="space-y-6">
+              <StampPanel
+                lang={lang}
+                stampConfig={stampConfig}
+                onStampChange={setStampConfig}
+              />
+            </div>
+          )}
+
+          {/* TAB 3: Compliance & Package Review Workspace */}
+          {activeTab === 'review' && (
+            <div className="space-y-6">
+              <StatusBanner
+                tender={tenderData.tender}
+                items={evaluatedItems}
+                isGenerating={isGenerating}
+                packageBlobUrl={packageBlobUrl}
+                onGeneratePackage={handleGeneratePackage}
+                onExportCsv={handleExportCsv}
+                onSaveSession={handleSaveSession}
+                hasSavedSession={hasSavedSession}
+                lang={lang}
+              />
+            </div>
+          )}
+
+        </main>
+
+        {/* Quick PDF Preview Modal */}
+        <PdfPreviewModal
+          file={previewFile}
+          onClose={() => setPreviewFile(null)}
           lang={lang}
         />
 
-        {/* Official Company Seal / Stamp Tool (Section 7 Bonus) */}
-        <StampPanel
-          lang={lang}
-          stampConfig={stampConfig}
-          onStampChange={setStampConfig}
-        />
-
-        {/* Interactive Checklist Table */}
-        <ChecklistTable
-          items={evaluatedItems}
-          availableFiles={availableFiles}
-          onMatchFile={handleMatchFile}
-          onUnmatchFile={handleUnmatchFile}
-          onUpdateExpiryDate={handleUpdateExpiryDate}
-          onPreviewFile={setPreviewFile}
-          onAutoMatch={handleAutoMatch}
-          lang={lang}
-        />
-
-        {/* Validation Status & Action Banner */}
-        <StatusBanner
+        {/* Floating Master Action Dock (Fixed at bottom across all views) */}
+        <MasterActionDock
           tender={tenderData.tender}
           items={evaluatedItems}
           isGenerating={isGenerating}
           packageBlobUrl={packageBlobUrl}
+          stampConfig={stampConfig}
           onGeneratePackage={handleGeneratePackage}
           onExportCsv={handleExportCsv}
           onSaveSession={handleSaveSession}
           hasSavedSession={hasSavedSession}
           lang={lang}
+          onJumpToBlockers={() => setActiveTab('checklist')}
         />
-      </main>
 
-      {/* Quick PDF Preview Modal */}
-      <PdfPreviewModal
-        file={previewFile}
-        onClose={() => setPreviewFile(null)}
-        lang={lang}
-      />
-
-      {/* Footer */}
-      <footer className="border-t border-slate-900 bg-[#05080f] py-6 text-center text-xs text-slate-500 font-mono">
-        Tender Document Package Builder • 100% Client-Side In-Browser Architecture
-      </footer>
+        {/* Footer */}
+        <footer className="border-t border-slate-900/80 bg-[#05080f]/90 py-5 text-center text-xs text-slate-500 font-mono">
+          Tender Document Package Builder • 100% Client-Side In-Browser Architecture
+        </footer>
+      </div>
     </div>
   );
 }
+
 export default App;

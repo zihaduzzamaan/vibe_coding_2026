@@ -125,6 +125,18 @@ export const translations = {
     checklistSubtitle: "Matched documents will be concatenated strictly by order (1 to 10).",
     detectedExpiry: "Detected Expiry:",
     clickToApply: "Click to apply suggested date",
+
+    // Workflow tabs & Floating Action Dock
+    tabDocuments: "1. Documents & Checklist",
+    tabSeal: "2. Official Seal & Watermark",
+    tabAudit: "3. Compliance & Package Review",
+    dockReady: "Ready to Generate",
+    dockBlocked: "Issues Blocking",
+    dockPages: "pages",
+    dockSealActive: "Seal Attached",
+    dockGenerateNow: "Generate Master PDF",
+    dockDownloadNow: "Download Master PDF",
+    dockRegenerate: "Regenerate",
   },
   bn: {
     appTitle: "দরপত্র নথি প্যাকেজ প্রস্তুতকারক",
@@ -250,6 +262,18 @@ export const translations = {
     checklistSubtitle: "সংযুক্ত নথিগুলো ক্রমানুসারে (১ থেকে ১০) বিন্যস্ত করা হবে।",
     detectedExpiry: "সনাক্তকৃত মেয়াদ:",
     clickToApply: "সনাক্তকৃত তারিখ বসাতে ক্লিক করুন",
+
+    // Workflow tabs & Floating Action Dock
+    tabDocuments: "১. নথিপত্র ও চেকলিস্ট",
+    tabSeal: "২. অফিসিয়াল সিল ও ওয়াটারমার্ক",
+    tabAudit: "৩. কমপ্লায়েন্স ও প্যাকেজ প্রিভিউ",
+    dockReady: "প্যাকেজ তৈরির জন্য প্রস্তুত",
+    dockBlocked: "সমাধান আবশ্যক",
+    dockPages: "পৃষ্ঠা",
+    dockSealActive: "সিল সংযুক্ত",
+    dockGenerateNow: "মাস্টার PDF তৈরি করুন",
+    dockDownloadNow: "মাস্টার PDF ডাউনলোড",
+    dockRegenerate: "পুনরায় তৈরি করুন",
   }
 };
 
