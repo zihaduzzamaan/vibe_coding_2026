@@ -1,5 +1,5 @@
 import React from 'react';
-import { FileText, Languages, RefreshCw, Upload, CheckCircle2, BookmarkCheck } from 'lucide-react';
+import { FileText, Languages, RefreshCw, Upload } from 'lucide-react';
 import { Language, TenderMetadata } from '../types/tender';
 import { getT } from '../i18n/translations';
 
@@ -48,20 +48,10 @@ export const Header: React.FC<HeaderProps> = ({
 
         {/* Action Controls */}
         <div className="flex items-center space-x-2.5">
-          {/* Quick Load Sample */}
-          <button
-            onClick={onLoadSample}
-            className="px-3.5 py-1.5 text-xs font-medium rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700/80 transition-all flex items-center space-x-1.5 active:scale-95 shadow-sm"
-            title="Load sample tender requirements"
-          >
-            <BookmarkCheck className="w-3.5 h-3.5 text-emerald-400" />
-            <span>{t.loadSample}</span>
-          </button>
-
           {/* Upload Custom JSON */}
           <button
             onClick={onUploadRequirementsClick}
-            className="px-3 py-1.5 text-xs font-medium rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700/80 transition-all flex items-center space-x-1.5 active:scale-95 hidden md:flex"
+            className="px-3.5 py-1.5 text-xs font-medium rounded-lg bg-slate-800/90 hover:bg-slate-700 text-slate-200 border border-slate-700/80 hover:border-sky-500/40 transition-all flex items-center space-x-1.5 active:scale-95 shadow-sm"
             title="Upload requirements.json"
           >
             <Upload className="w-3.5 h-3.5 text-sky-400" />

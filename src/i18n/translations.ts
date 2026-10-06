@@ -93,6 +93,10 @@ export const translations = {
     // Stamp & Seal (Bonus)
     stampTitle: "Company Seal / Stamp Placement",
     stampSubtitle: "Apply official digital seal or watermark onto generated package documents",
+    stampPlacementGroup: "Position & Target Pages",
+    stampPlacementDesc: "Configure placement coordinates and target document pages",
+    stampAppearanceGroup: "Opacity & Dimensions",
+    stampAppearanceDesc: "Fine-tune watermark transparency and print dimensions",
     stampUpload: "Upload Official Seal (PNG / JPG)",
     stampPosition: "Stamp Position",
     stampTargetPages: "Apply To",
@@ -214,6 +218,10 @@ export const translations = {
     // Stamp & Seal (Bonus)
     stampTitle: "কোম্পানির অফিসিয়াল সিল / স্ট্যাম্প স্থাপন",
     stampSubtitle: "চূড়ান্ত প্যাকেজের পৃষ্ঠাসমূহে অফিসিয়াল ডিজিটাল সিল অথবা ওয়াটারমার্ক যুক্ত করুন",
+    stampPlacementGroup: "অবস্থান ও প্রয়োগের ক্ষেত্র",
+    stampPlacementDesc: "সিল বসানোর নির্দিষ্ট কোঅর্ডিনেট এবং প্রযোজ্য পৃষ্ঠাসমূহ নির্ধারণ করুন",
+    stampAppearanceGroup: "স্বচ্ছতা ও পরিমাপ",
+    stampAppearanceDesc: "সিলের জলছাপের দৃশ্যমানতা ও আকার নিখুঁতভাবে সমন্বয় করুন",
     stampUpload: "অফিসিয়াল সিলের ছবি আপলোড করুন (PNG / JPG)",
     stampPosition: "সিলের অবস্থান",
     stampTargetPages: "প্রয়োগের স্থান",
