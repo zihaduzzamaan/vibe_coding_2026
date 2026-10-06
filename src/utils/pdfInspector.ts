@@ -1,5 +1,6 @@
 import { PDFDocument } from 'pdf-lib';
 import * as pdfjsLib from 'pdfjs-dist';
+import { findExpiryDate } from './dateDetect';
 
 // Configure pdfjs worker in Vite-friendly way
 try {
@@ -8,7 +9,7 @@ try {
     import.meta.url
   ).toString();
 } catch {
-  // Fallback to unconfigured worker (legacy mode)
+  // Fallback
 }
 
 export interface PdfInspectionResult {
@@ -16,10 +17,11 @@ export interface PdfInspectionResult {
   isPdf: boolean;
   error?: string;
   detectedExpiryDate?: string;
+  extractedText?: string;
 }
 
 /**
- * Extracts all text from PDF using pdfjs-dist
+ * Extracts text from the first pages of a PDF using pdfjs-dist
  */
 async function extractPdfText(arrayBuffer: ArrayBuffer): Promise<string> {
   try {
@@ -32,7 +34,9 @@ async function extractPdfText(arrayBuffer: ArrayBuffer): Promise<string> {
     const doc = await loadingTask.promise;
     let combinedText = '';
 
-    for (let i = 1; i <= doc.numPages; i++) {
+    // Read up to first 3 pages to extract relevant text and headers
+    const maxPagesToScan = Math.min(doc.numPages, 3);
+    for (let i = 1; i <= maxPagesToScan; i++) {
       const page = await doc.getPage(i);
       const textContent = await page.getTextContent();
       const pageStr = textContent.items
@@ -65,6 +69,16 @@ export async function inspectPdf(file: File): Promise<PdfInspectionResult> {
     }
 
     const pdfDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
+    
+    // Check for password protection / encryption (Bonus / Robustness)
+    if (pdfDoc.isEncrypted) {
+      return {
+        pageCount: 0,
+        isPdf: false,
+        error: 'PDF is password-protected or encrypted. Please provide an unencrypted document.'
+      };
+    }
+
     const pageCount = pdfDoc.getPageCount();
 
     // 1. Try deep text extraction via pdfjs-dist
@@ -74,13 +88,11 @@ export async function inspectPdf(file: File): Promise<PdfInspectionResult> {
     const rawText = new TextDecoder('latin1').decode(arrayBuffer);
     const searchableText = `${extractedText} ${rawText}`;
     
-    let detectedExpiryDate: string | undefined = undefined;
+    // 3. Find expiry date by looking strictly near expiry keywords (never guessing from filename)
+    let detectedExpiryDate = findExpiryDate(searchableText);
 
-    // Search for ISO date pattern YYYY-MM-DD
-    const isoDateRegex = /\b(202[0-9]-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12][0-9]|3[01]))\b/g;
-    const matches = searchableText.match(isoDateRegex);
-    if (matches && matches.length > 0) {
-      // Find date near EXPIRY keyword if present
+    // If keyword anchor didn't catch ISO date, look near EXPIRY in raw text
+    if (!detectedExpiryDate) {
       const upper = searchableText.toUpperCase();
       const expiryIdx = upper.indexOf('EXPIRY');
       if (expiryIdx !== -1) {
@@ -90,29 +102,13 @@ export async function inspectPdf(file: File): Promise<PdfInspectionResult> {
           detectedExpiryDate = nearMatch[1];
         }
       }
-      if (!detectedExpiryDate) {
-        // Look for the latest date in the document
-        const sortedDates = [...matches].sort();
-        detectedExpiryDate = sortedDates[sortedDates.length - 1];
-      }
-    }
-
-    // 3. Document-specific heuristic fallback for standard sample-pack filenames
-    if (!detectedExpiryDate) {
-      const lowerName = file.name.toLowerCase();
-      if (lowerName.includes('trade_license_2026')) {
-        detectedExpiryDate = '2027-06-30';
-      } else if (lowerName.includes('trade_license_2025')) {
-        detectedExpiryDate = '2025-06-30';
-      } else if (lowerName.includes('bank_solvency')) {
-        detectedExpiryDate = '2026-12-31';
-      }
     }
 
     return {
       pageCount,
       isPdf: true,
-      detectedExpiryDate
+      detectedExpiryDate,
+      extractedText: extractedText.trim()
     };
   } catch (err: any) {
     return {
@@ -122,4 +118,3 @@ export async function inspectPdf(file: File): Promise<PdfInspectionResult> {
     };
   }
 }
-

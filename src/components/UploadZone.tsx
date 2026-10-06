@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { UploadCloud, FileText, Trash2, AlertTriangle, AlertCircle, Eye, Copy, CheckCircle2 } from 'lucide-react';
+import { UploadCloud, FileText, Trash2, AlertTriangle, AlertCircle, Eye } from 'lucide-react';
 import { UploadedFile, Language } from '../types/tender';
 import { getT } from '../i18n/translations';
 
@@ -51,7 +51,7 @@ export const UploadZone: React.FC<UploadZoneProps> = ({
 
   return (
     <div className="space-y-4">
-      {/* Non-PDF Rejection Banner (Rule 4.2) */}
+      {/* Non-PDF / File Rejection Banners (Rule 4.2 & Robustness) */}
       {nonPdfErrors.length > 0 && (
         <div className="space-y-2">
           {nonPdfErrors.map((err, idx) => (
@@ -69,6 +69,7 @@ export const UploadZone: React.FC<UploadZoneProps> = ({
               <button
                 onClick={() => onDismissNonPdfError(idx)}
                 className="text-xs text-rose-400 hover:text-rose-200 px-2 py-1 rounded bg-rose-500/20 hover:bg-rose-500/30 transition-colors"
+                aria-label={t.close}
               >
                 {t.close}
               </button>
@@ -100,7 +101,7 @@ export const UploadZone: React.FC<UploadZoneProps> = ({
           className="hidden"
         />
 
-        <div className="w-13 h-13 mx-auto mb-3 rounded-2xl bg-slate-800/80 border border-slate-700/60 flex items-center justify-center text-emerald-400 group-hover:scale-105 transition-transform shadow-inner">
+        <div className="w-14 h-14 mx-auto mb-3 rounded-2xl bg-slate-800/80 border border-slate-700/60 flex items-center justify-center text-emerald-400 transition-transform shadow-inner">
           <UploadCloud className="w-7 h-7" />
         </div>
 
@@ -112,11 +113,11 @@ export const UploadZone: React.FC<UploadZoneProps> = ({
         </p>
 
         <div className="mt-3 flex items-center justify-center space-x-2 text-[11px] text-slate-500">
-          <span className="px-2 py-0.5 rounded bg-slate-800 border border-slate-700/50">PDF only</span>
+          <span className="px-2 py-0.5 rounded bg-slate-800 border border-slate-700/50">{t.pdfOnly}</span>
           <span>•</span>
-          <span>Max 30 files</span>
+          <span>{t.maxFiles}</span>
           <span>•</span>
-          <span>Max 50 MB total</span>
+          <span>{t.maxSize}</span>
         </div>
       </div>
 
@@ -170,7 +171,7 @@ export const UploadZone: React.FC<UploadZoneProps> = ({
                       <div className="mt-1 flex items-center space-x-1 text-[10px] text-amber-300 font-medium">
                         <AlertTriangle className="w-3 h-3 text-amber-400 shrink-0" />
                         <span className="truncate">
-                          {t.duplicateBadge}: {file.duplicateOfName}
+                          {t.duplicateBadge}: {file.duplicateOfName || 'Identical content'}
                         </span>
                       </div>
                     )}
@@ -183,6 +184,7 @@ export const UploadZone: React.FC<UploadZoneProps> = ({
                     onClick={() => onPreviewFile(file)}
                     className="p-1.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-colors"
                     title={t.previewFile}
+                    aria-label={t.previewFile}
                   >
                     <Eye className="w-3.5 h-3.5" />
                   </button>
@@ -190,6 +192,7 @@ export const UploadZone: React.FC<UploadZoneProps> = ({
                     onClick={() => onRemoveFile(file.id)}
                     className="p-1.5 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition-colors"
                     title={t.removeFile}
+                    aria-label={t.removeFile}
                   >
                     <Trash2 className="w-3.5 h-3.5" />
                   </button>

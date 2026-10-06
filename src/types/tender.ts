@@ -36,7 +36,8 @@ export interface UploadedFile {
   hash: string;           // SHA-256 for duplicate detection
   isDuplicate: boolean;
   duplicateOfName?: string;
-  isPdf: boolean;
+  duplicateOf?: string[];
+  isPdf?: boolean;
   error?: string;
   previewUrl?: string;
   extractedText?: string;
@@ -48,6 +49,11 @@ export interface MatchedItem {
   fileId?: string;
   expiryDate?: string;    // YYYY-MM-DD
 }
+
+export type MatchEntry = {
+  fileId?: string;
+  expiryDate?: string;
+};
 
 export interface EvaluationResult {
   requirement: Requirement;
@@ -63,7 +69,7 @@ export interface StampConfig {
   file: File;
   previewUrl: string;
   position: 'bottom-right' | 'bottom-left' | 'top-right' | 'bottom-center';
-  targetPages: 'all-pages' | 'all-documents' | 'last-page' | 'cover-only';
+  targetPages: 'all-documents' | 'all-pages' | 'last-page' | 'cover-only';
   opacity: number; // 0.1 to 1.0
   width: number;   // points, e.g. 70
 }

@@ -8,11 +8,11 @@ import { StatusBanner } from './components/StatusBanner';
 import { PdfPreviewModal } from './components/PdfPreviewModal';
 import { StampPanel } from './components/StampPanel';
 import { SAMPLE_REQUIREMENTS } from './data/defaultRequirements';
-import { 
-  RequirementsData, 
-  UploadedFile, 
-  Language, 
-  EvaluationResult, 
+import {
+  RequirementsData,
+  UploadedFile,
+  Language,
+  EvaluationResult,
   TenderMetadata,
   Requirement,
   StampConfig
@@ -230,8 +230,8 @@ export function App() {
 
       for (const kw of keywords) {
         // Find best non-duplicate match first
-        const candidate = uploadedFiles.find(f => 
-          !usedFileIds.has(f.id) && 
+        const candidate = uploadedFiles.find(f =>
+          !usedFileIds.has(f.id) &&
           !f.isDuplicate &&
           f.name.toLowerCase().includes(kw)
         );
@@ -439,7 +439,7 @@ export function App() {
 
       {/* Footer */}
       <footer className="border-t border-slate-900 bg-[#05080f] py-6 text-center text-xs text-slate-500 font-mono">
-        Tender Document Package Builder • 100% Client-Side In-Browser Architecture • AI DevFest 2026
+        Tender Document Package Builder • 100% Client-Side In-Browser Architecture
       </footer>
     </div>
   );

@@ -10,7 +10,6 @@ import {
   Eye, 
   Sparkles,
   Calendar,
-  Lock,
   Wand2
 } from 'lucide-react';
 import { EvaluationResult, UploadedFile, Language, DocumentStatus } from '../types/tender';
@@ -85,15 +84,13 @@ export const ChecklistTable: React.FC<ChecklistTableProps> = ({
       <div className="p-5 border-b border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h3 className="text-base font-bold text-white flex items-center space-x-2">
-            <span>{lang === 'en' ? 'Tender Document Checklist' : 'দরপত্র নথিপত্রের চেকলিস্ট'}</span>
+            <span>{t.checklistTitle}</span>
             <span className="text-xs px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 font-mono">
-              {items.length} items
+              {items.length} {t.itemsCount}
             </span>
           </h3>
           <p className="text-xs text-slate-400 mt-0.5">
-            {lang === 'en'
-              ? 'Matched documents will be concatenated strictly by order (1 to 10).'
-              : 'সংযুক্ত নথিগুলো ক্রমানুসারে (১ থেকে ১০) বিন্যস্ত করা হবে।'}
+            {t.checklistSubtitle}
           </p>
         </div>
 
@@ -115,8 +112,8 @@ export const ChecklistTable: React.FC<ChecklistTableProps> = ({
               <th className="py-3 px-4 w-12 text-center">{t.order}</th>
               <th className="py-3 px-4 min-w-[200px]">{t.documentTitle}</th>
               <th className="py-3 px-4 min-w-[220px]">{t.matchedFile}</th>
-              <th className="py-3 px-4 min-w-[140px]">{t.expiryDate}</th>
-              <th className="py-3 px-4 min-w-[150px]">{t.status}</th>
+              <th className="py-3 px-4 min-w-[150px]">{t.expiryDate}</th>
+              <th className="py-3 px-4 min-w-[160px]">{t.status}</th>
               <th className="py-3 px-4 text-right w-20">{t.actions}</th>
             </tr>
           </thead>
@@ -163,7 +160,7 @@ export const ChecklistTable: React.FC<ChecklistTableProps> = ({
                       {requirement.has_expiry && (
                         <span className="text-[10px] font-medium px-1.5 py-0.2 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20 flex items-center space-x-1">
                           <Calendar className="w-2.5 h-2.5" />
-                          <span>Expiry Tracked</span>
+                          <span>{t.expiryTracked}</span>
                         </span>
                       )}
                     </div>
@@ -187,6 +184,7 @@ export const ChecklistTable: React.FC<ChecklistTableProps> = ({
                             onClick={() => onUnmatchFile(requirement.id)}
                             className="p-1 text-slate-400 hover:text-rose-400 rounded transition-colors"
                             title={t.unmatch}
+                            aria-label={t.unmatch}
                           >
                             <X className="w-3 h-3" />
                           </button>
@@ -218,28 +216,31 @@ export const ChecklistTable: React.FC<ChecklistTableProps> = ({
                   <td className="py-3.5 px-4">
                     {requirement.has_expiry ? (
                       matchedFile ? (
-                        <div className="flex items-center space-x-1.5">
-                          <input
-                            type="date"
-                            value={expiryDate || ''}
-                            onChange={(e) => onUpdateExpiryDate(requirement.id, e.target.value)}
-                            className="bg-slate-900 border border-slate-700/80 rounded-xl px-2.5 py-1 text-xs text-slate-200 font-mono focus:outline-none focus:ring-1 focus:ring-emerald-500"
-                          />
+                        <div className="space-y-1">
+                          <div className="flex items-center space-x-1.5">
+                            <input
+                              type="date"
+                              value={expiryDate || ''}
+                              onChange={(e) => onUpdateExpiryDate(requirement.id, e.target.value)}
+                              className="bg-slate-900 border border-slate-700/80 rounded-xl px-2.5 py-1 text-xs text-slate-200 font-mono focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                            />
+                          </div>
                           {matchedFile.detectedExpiryDate && matchedFile.detectedExpiryDate !== expiryDate && (
                             <button
                               onClick={() => onUpdateExpiryDate(requirement.id, matchedFile.detectedExpiryDate!)}
-                              className="p-1 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 text-[10px] flex items-center space-x-1"
-                              title={`Auto-detected from PDF: ${matchedFile.detectedExpiryDate}`}
+                              className="px-2 py-0.5 rounded-md bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[10px] font-mono flex items-center space-x-1 transition-colors"
+                              title={t.clickToApply}
                             >
                               <Sparkles className="w-3 h-3" />
+                              <span>{matchedFile.detectedExpiryDate}</span>
                             </button>
                           )}
                         </div>
                       ) : (
-                        <span className="text-slate-500 italic text-[11px]">— Match file first —</span>
+                        <span className="text-slate-500 italic text-[11px]">{t.matchFirst}</span>
                       )
                     ) : (
-                      <span className="text-slate-600 font-mono text-[11px]">N/A</span>
+                      <span className="text-slate-600 font-mono text-[11px]">{t.notApplicable}</span>
                     )}
                   </td>
 
@@ -258,6 +259,7 @@ export const ChecklistTable: React.FC<ChecklistTableProps> = ({
                         onClick={() => onPreviewFile(matchedFile)}
                         className="p-1.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-colors"
                         title={t.previewFile}
+                        aria-label={t.previewFile}
                       >
                         <Eye className="w-4 h-4" />
                       </button>

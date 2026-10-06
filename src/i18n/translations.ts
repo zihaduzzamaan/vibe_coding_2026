@@ -3,7 +3,7 @@ import { Language } from '../types/tender';
 export const translations = {
   en: {
     appTitle: "Tender Document Package Builder",
-    appSubtitle: "AI DevFest 2026 — Verification & Master Package Assembly Engine",
+    appSubtitle: "Verification & Master Package Assembly Engine",
     tenderOverview: "Tender Overview",
     tenderId: "Tender ID",
     procuringEntity: "Procuring Entity",
@@ -15,7 +15,7 @@ export const translations = {
     statusFilterAll: "All Documents",
     statusFilterBlocking: "Blocking Only",
     statusFilterOk: "Valid (OK)",
-    
+
     // Checklist headers
     order: "Order",
     documentTitle: "Document Requirement",
@@ -26,24 +26,24 @@ export const translations = {
     expiryDate: "Expiry Date",
     status: "Status",
     actions: "Actions",
-    
+
     // Status badges
     statusMissing: "Missing",
     statusExpiryNeeded: "Expiry date needed",
     statusExpired: "Expired",
     statusNotProvided: "Not provided",
     statusOk: "OK",
-    
+
     // Reasons
     reasonMissing: "Required document has no file matched.",
     reasonExpiryNeeded: "Matched document requires an expiry date.",
     reasonExpired: "Expiry date is before the submission deadline.",
     reasonNotProvided: "Optional document, not provided.",
     reasonOk: "Valid and compliant for submission.",
-    
+
     // Upload Zone
     uploadTitle: "Upload Tender PDF Documents",
-    uploadSubtitle: "Drag & drop your PDF documents here or click to browse (up to 30 files, 50MB)",
+    uploadSubtitle: "Drag & drop your PDF documents here or click to browse",
     uploadedFiles: "Uploaded Files",
     noFilesUploaded: "No PDF files uploaded yet. Drag files above to begin.",
     nonPdfError: "File rejected! Non-PDF file detected:",
@@ -57,7 +57,11 @@ export const translations = {
     selectFileToMatch: "Select a file...",
     autoMatchBtn: "Auto-Match Files",
     autoMatchedSuccess: "Auto-matched files based on document name heuristics!",
-    
+    pdfOnly: "PDF only",
+    maxFiles: "Max 30 files",
+    maxSize: "Max 50 MB total",
+    limitExceeded: "Upload limit exceeded! Maximum 30 files and 50MB total allowed.",
+
     // Actions & Package
     generateBtn: "Generate Package",
     generating: "Assembling Master PDF...",
@@ -67,27 +71,28 @@ export const translations = {
     saveSession: "Save Session",
     restoreSession: "Restore Session",
     sessionSaved: "Session saved successfully to browser storage!",
-    
+
     // Footer rules info
     coverPageInfo: "Cover Page (English)",
     coverPageDesc: "Page 1 displays tender metadata, bidder details, and ordered document index.",
     runningFooterInfo: "Running Footer",
     runningFooterDesc: "Every page receives the standard footer: <tender_id> | Page X of Y.",
-    
+
     // Modal
     close: "Close",
     documentPreview: "Document Preview",
     page: "Page",
     of: "of",
-    
+
     // Blocking summary
     blockingBannerTitle: "Submission Blocked",
     blockingBannerSubtitle: "The package cannot be generated until all blocking issues are resolved:",
     allValidTitle: "Ready for Package Generation",
     allValidSubtitle: "All mandatory documents are matched, non-expired, and verified.",
-    
+
     // Stamp & Seal (Bonus)
-    stampTitle: "Company Seal / Stamp Placement (Bonus)",
+    stampTitle: "Company Seal / Stamp Placement",
+    stampSubtitle: "Apply official digital seal or watermark onto generated package documents",
     stampUpload: "Upload Official Seal (PNG / JPG)",
     stampPosition: "Stamp Position",
     stampTargetPages: "Apply To",
@@ -104,10 +109,22 @@ export const translations = {
     pagesCover: "Cover Page Only",
     sampleLogo: "Use Sample Logo (company_logo.png)",
     removeStamp: "Remove Seal",
+
+    // Micro copy & UI polish
+    expiryTracked: "Expiry Tracked",
+    matchFirst: "— Match file first —",
+    notApplicable: "N/A",
+    zeroErrors: "Zero Errors",
+    saved: "Saved",
+    itemsCount: "items",
+    checklistTitle: "Tender Document Checklist",
+    checklistSubtitle: "Matched documents will be concatenated strictly by order (1 to 10).",
+    detectedExpiry: "Detected Expiry:",
+    clickToApply: "Click to apply suggested date",
   },
   bn: {
     appTitle: "দরপত্র নথি প্যাকেজ প্রস্তুতকারক",
-    appSubtitle: "এআই ডেভফেস্ট ২০২৬ — যাচাইকরণ ও মাস্টার প্যাকেজ অ্যাসেম্বলি ইঞ্জিন",
+    appSubtitle: "যাচাইকরণ ও মাস্টার প্যাকেজ অ্যাসেম্বলি ইঞ্জিন",
     tenderOverview: "দরপত্রের বিবরণ",
     tenderId: "দরপত্র আইডি",
     procuringEntity: "ক্রয়কারী কর্তৃপক্ষ",
@@ -119,7 +136,7 @@ export const translations = {
     statusFilterAll: "সকল নথি",
     statusFilterBlocking: "ত্রুটিপূর্ণ নথি",
     statusFilterOk: "বৈধ (ঠিক আছে)",
-    
+
     // Checklist headers
     order: "ক্রম",
     documentTitle: "নথির বিবরণ",
@@ -130,24 +147,24 @@ export const translations = {
     expiryDate: "মেয়াদ উত্তীর্ণের তারিখ",
     status: "অবস্থা",
     actions: "অ্যাকশন",
-    
+
     // Status badges
     statusMissing: "অনুপস্থিত",
     statusExpiryNeeded: "মেয়াদের তারিখ প্রয়োজন",
     statusExpired: "মেয়াদোত্তীর্ণ",
     statusNotProvided: "প্রদান করা হয়নি",
     statusOk: "ঠিক আছে",
-    
+
     // Reasons
     reasonMissing: "বাধ্যতামূলক নথিতে কোনো ফাইল যুক্ত করা হয়নি।",
     reasonExpiryNeeded: "সংযুক্ত নথির মেয়াদ উত্তীর্ণের তারিখ প্রদান করতে হবে।",
     reasonExpired: "মেয়াদ উত্তীর্ণের তারিখ দরপত্র জমার শেষ তারিখের পূর্ববর্তী।",
     reasonNotProvided: "ঐচ্ছিক নথি, প্রদান করা হয়নি।",
     reasonOk: "বৈধ ও দরপত্র জমার জন্য সম্পূর্ণ উপযুক্ত।",
-    
+
     // Upload Zone
     uploadTitle: "দরপত্র সংক্রান্ত পিডিএফ ফাইল আপলোড করুন",
-    uploadSubtitle: "আপনার পিডিএফ ফাইলগুলো এখানে টেনে আনুন অথবা নির্বাচন করুন (সর্বোচ্চ ৩০টি ফাইল, ৫০ মেগাবাইট)",
+    uploadSubtitle: "আপনার পিডিএফ ফাইলগুলো এখানে টেনে আনুন অথবা নির্বাচন করুন",
     uploadedFiles: "আপলোডকৃত ফাইলসমূহ",
     noFilesUploaded: "এখনও কোনো ফাইল আপলোড করা হয়নি। উপরে ফাইল ড্রপ করুন।",
     nonPdfError: "ফাইল বাতিল করা হয়েছে! অ-পিডিএফ ফাইল সনাক্ত হয়েছে:",
@@ -161,7 +178,11 @@ export const translations = {
     selectFileToMatch: "ফাইল নির্বাচন করুন...",
     autoMatchBtn: "স্বয়ংক্রিয় ম্যাচিং",
     autoMatchedSuccess: "নথির নামের উপর ভিত্তি করে স্বয়ংক্রিয়ভাবে ম্যাচ করা হয়েছে!",
-    
+    pdfOnly: "শুধুমাত্র পিডিএফ",
+    maxFiles: "সর্বোচ্চ ৩০টি ফাইল",
+    maxSize: "সর্বোচ্চ ৫০ মেগাবাইট",
+    limitExceeded: "আপলোডের সীমা অতিক্রম করেছে! সর্বোচ্চ ৩০টি ফাইল এবং মোট ৫০ মেগাবাইট অনুমোদিত।",
+
     // Actions & Package
     generateBtn: "প্যাকেজ তৈরি করুন",
     generating: "মাস্টার পিডিএফ তৈরি হচ্ছে...",
@@ -171,27 +192,28 @@ export const translations = {
     saveSession: "সেশন সংরক্ষণ",
     restoreSession: "সেশন ফিরিয়ে আনুন",
     sessionSaved: "সেশন সফলভাবে ব্রাউজার মেমোরিতে সংরক্ষিত হয়েছে!",
-    
+
     // Footer rules info
     coverPageInfo: "কভার পেজ (ইংরেজি)",
     coverPageDesc: "১ম পৃষ্ঠায় দরপত্রের তথ্য, বিডার বিবরণ এবং ক্রমবিন্যস্ত ইনডেক্স থাকবে।",
     runningFooterInfo: "রানিং ফুটার",
     runningFooterDesc: "প্রতিটি পৃষ্ঠার নিচে থাকবে: <tender_id> | Page X of Y।",
-    
+
     // Modal
     close: "বন্ধ করুন",
     documentPreview: "নথি প্রিভিউ",
     page: "পৃষ্ঠা",
     of: "এর",
-    
+
     // Blocking summary
     blockingBannerTitle: "প্যাকেজ তৈরি স্থগিত আছে",
     blockingBannerSubtitle: "সবগুলো সমস্যা সমাধান না হওয়া পর্যন্ত চূড়ান্ত প্যাকেজ তৈরি করা যাবে না:",
     allValidTitle: "প্যাকেজ তৈরির জন্য সম্পূর্ণ প্রস্তুত",
     allValidSubtitle: "সকল বাধ্যতামূলক নথি যুক্ত, মেয়াদোত্তীর্ণ নয় এবং যথাযথভাবে যাচাইকৃত।",
-    
+
     // Stamp & Seal (Bonus)
-    stampTitle: "কোম্পানির অফিসিয়াল সিল / স্ট্যাম্প স্থাপন (বোনাস)",
+    stampTitle: "কোম্পানির অফিসিয়াল সিল / স্ট্যাম্প স্থাপন",
+    stampSubtitle: "চূড়ান্ত প্যাকেজের পৃষ্ঠাসমূহে অফিসিয়াল ডিজিটাল সিল অথবা ওয়াটারমার্ক যুক্ত করুন",
     stampUpload: "অফিসিয়াল সিলের ছবি আপলোড করুন (PNG / JPG)",
     stampPosition: "সিলের অবস্থান",
     stampTargetPages: "প্রয়োগের স্থান",
@@ -208,6 +230,18 @@ export const translations = {
     pagesCover: "শুধুমাত্র কভার পেজে",
     sampleLogo: "নমুনা লোগো ব্যবহার করুন (company_logo.png)",
     removeStamp: "সিল মুছুন",
+
+    // Micro copy & UI polish
+    expiryTracked: "মেয়াদ নিরীক্ষিত",
+    matchFirst: "— প্রথমে ফাইল যুক্ত করুন —",
+    notApplicable: "প্রযোজ্য নয়",
+    zeroErrors: "কোনো ত্রুটি নেই",
+    saved: "সংরক্ষিত",
+    itemsCount: "টি নথি",
+    checklistTitle: "দরপত্র নথিপত্রের চেকলিস্ট",
+    checklistSubtitle: "সংযুক্ত নথিগুলো ক্রমানুসারে (১ থেকে ১০) বিন্যস্ত করা হবে।",
+    detectedExpiry: "সনাক্তকৃত মেয়াদ:",
+    clickToApply: "সনাক্তকৃত তারিখ বসাতে ক্লিক করুন",
   }
 };
 
