@@ -6,10 +6,8 @@ import {
   ShieldCheck, 
   Sliders, 
   Move, 
-  Layers, 
   Check, 
-  Eye, 
-  Maximize2 
+  Eye 
 } from 'lucide-react';
 import { Language, StampConfig } from '../types/tender';
 import { getT } from '../i18n/translations';
@@ -88,7 +86,7 @@ export const StampPanel: React.FC<StampPanelProps> = ({
   const sizePresets = [50, 70, 90, 110];
 
   return (
-    <section className="bg-slate-900/80 rounded-2xl border border-slate-800 p-5 sm:p-6 shadow-xl transition-all">
+    <section className="bg-slate-900/80 rounded-2xl border border-slate-800 p-5 sm:p-7 shadow-xl transition-all">
       {/* Panel Header */}
       <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-slate-800/80">
         <div className="flex items-center gap-3">
@@ -98,7 +96,7 @@ export const StampPanel: React.FC<StampPanelProps> = ({
           <div>
             <div className="flex items-center gap-2">
               <h3 className="text-base font-semibold text-slate-100">{t.stampTitle}</h3>
-              <span className="px-2 py-0.5 rounded-full text-[11px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+              <span className="px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
                 Section 7 Bonus
               </span>
             </div>
@@ -109,17 +107,17 @@ export const StampPanel: React.FC<StampPanelProps> = ({
         </div>
 
         {stampConfig && (
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2.5">
             <button
               onClick={() => fileInputRef.current?.click()}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800 hover:bg-slate-750 text-slate-300 border border-slate-700/80 transition-all active:scale-95"
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-medium bg-slate-800 hover:bg-slate-750 text-slate-200 border border-slate-700/80 transition-all active:scale-95 shadow-sm"
             >
               <Upload className="w-3.5 h-3.5 text-indigo-400" />
               <span>Change Image</span>
             </button>
             <button
               onClick={handleRemove}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-rose-500/10 text-rose-400 border border-rose-500/20 hover:bg-rose-500/20 transition-all active:scale-95"
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-medium bg-rose-500/10 text-rose-400 border border-rose-500/20 hover:bg-rose-500/20 transition-all active:scale-95 shadow-sm"
             >
               <X className="w-3.5 h-3.5" />
               <span>{t.removeStamp}</span>
@@ -138,30 +136,32 @@ export const StampPanel: React.FC<StampPanelProps> = ({
 
       {/* Empty State */}
       {!stampConfig ? (
-        <div className="mt-5 p-6 rounded-xl border border-dashed border-slate-800 bg-slate-950/40 text-center">
-          <div className="max-w-md mx-auto space-y-3">
-            <div className="w-12 h-12 mx-auto rounded-full bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
-              <Upload className="w-6 h-6" />
+        <div className="mt-6 p-8 rounded-2xl border border-dashed border-slate-800 bg-slate-950/40 text-center">
+          <div className="max-w-md mx-auto space-y-4">
+            <div className="w-14 h-14 mx-auto rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 shadow-inner">
+              <Upload className="w-7 h-7" />
             </div>
-            <p className="text-sm font-medium text-slate-200">
-              {t.stampUpload}
-            </p>
-            <p className="text-xs text-slate-400">
-              Upload transparent PNG or company emblem to watermark package documents automatically.
-            </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-2.5 pt-2">
+            <div>
+              <p className="text-sm font-semibold text-slate-200">
+                {t.stampUpload}
+              </p>
+              <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                Upload transparent PNG or company emblem to watermark package documents automatically.
+              </p>
+            </div>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
               <button
                 onClick={() => fileInputRef.current?.click()}
-                className="w-full sm:w-auto px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-medium transition-all shadow-md shadow-indigo-600/20 active:scale-95 flex items-center justify-center gap-2"
+                className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold transition-all shadow-md shadow-indigo-600/25 active:scale-95 flex items-center justify-center gap-2"
               >
-                <Upload className="w-3.5 h-3.5" />
+                <Upload className="w-4 h-4" />
                 <span>Upload Seal File</span>
               </button>
               <button
                 onClick={handleLoadSampleLogo}
-                className="w-full sm:w-auto px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-750 text-slate-300 border border-slate-700/80 text-xs font-medium transition-all active:scale-95 flex items-center justify-center gap-2"
+                className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-slate-850 hover:bg-slate-800 text-slate-300 border border-slate-700/80 text-xs font-medium transition-all active:scale-95 flex items-center justify-center gap-2 shadow-sm"
               >
-                <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                <ShieldCheck className="w-4 h-4 text-emerald-400" />
                 <span>{t.sampleLogo}</span>
               </button>
             </div>
@@ -169,22 +169,22 @@ export const StampPanel: React.FC<StampPanelProps> = ({
         </div>
       ) : (
         /* Configured State */
-        <div className="mt-5 grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
+        <div className="mt-6 grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 items-stretch">
           
           {/* Column 1: Live Interactive Mockup (3 cols) */}
-          <div className="lg:col-span-3 rounded-xl border border-slate-800/90 bg-slate-950/60 p-4 flex flex-col justify-between items-center">
-            <div className="w-full flex items-center justify-between pb-2 border-b border-slate-800/60 text-[11px] text-slate-400 font-medium">
-              <span className="flex items-center gap-1.5 text-slate-300">
+          <div className="lg:col-span-3 rounded-2xl border border-slate-800/90 bg-slate-950/60 p-5 flex flex-col justify-between items-center shadow-sm">
+            <div className="w-full flex items-center justify-between pb-3 border-b border-slate-800/70 text-xs text-slate-400 font-medium">
+              <span className="flex items-center gap-1.5 text-slate-300 font-semibold">
                 <Eye className="w-3.5 h-3.5 text-indigo-400" />
                 Preview
               </span>
-              <span className="text-emerald-400 font-mono text-[10px] bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/20">
+              <span className="text-emerald-400 font-mono text-[10px] bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20 font-semibold">
                 Live
               </span>
             </div>
 
             {/* Document Sheet Visual Mockup */}
-            <div className="my-4 relative w-32 h-44 bg-slate-100 rounded-lg shadow-2xl overflow-hidden flex flex-col justify-between p-2.5 border border-slate-300/40 select-none">
+            <div className="my-5 relative w-32 h-44 bg-slate-100 rounded-lg shadow-2xl overflow-hidden flex flex-col justify-between p-3 border border-slate-300/40 select-none">
               {/* Document Header lines */}
               <div className="space-y-1">
                 <div className="h-1.5 w-12 bg-slate-400/80 rounded-full"></div>
@@ -230,44 +230,45 @@ export const StampPanel: React.FC<StampPanelProps> = ({
 
             {/* Seal Info Badge */}
             <div className="w-full text-center">
-              <p className="text-[11px] font-medium text-slate-300 truncate" title={stampConfig.file.name}>
+              <p className="text-xs font-semibold text-slate-200 truncate px-1" title={stampConfig.file.name}>
                 {stampConfig.file.name}
               </p>
-              <div className="flex items-center justify-center gap-2 mt-1 text-[10px] text-slate-400 font-mono">
-                <span>{stampConfig.width}pt</span>
+              <div className="flex items-center justify-center gap-2 mt-1.5 text-[11px] text-slate-400 font-mono">
+                <span className="bg-slate-900 px-2 py-0.5 rounded border border-slate-800">{stampConfig.width}pt</span>
                 <span>•</span>
-                <span>{Math.round(stampConfig.opacity * 100)}%</span>
+                <span className="bg-slate-900 px-2 py-0.5 rounded border border-slate-800">{Math.round(stampConfig.opacity * 100)}%</span>
               </div>
             </div>
           </div>
 
           {/* Section 1: Placement & Scope (Position and Apply To) - 5 cols */}
-          <div className="lg:col-span-5 rounded-xl border border-slate-800/90 bg-slate-950/40 p-4.5 flex flex-col justify-between space-y-4 shadow-sm">
+          <div className="lg:col-span-5 rounded-2xl border border-slate-800/90 bg-slate-950/40 p-5 sm:p-6 flex flex-col justify-between space-y-5 shadow-sm">
             
             {/* Section Header */}
-            <div className="flex items-center gap-2 pb-2.5 border-b border-slate-800/70">
-              <div className="p-1.5 rounded-lg bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
-                <Move className="w-3.5 h-3.5" />
+            <div className="flex items-center gap-2.5 pb-3 border-b border-slate-800/70">
+              <div className="p-2 rounded-xl bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+                <Move className="w-4 h-4" />
               </div>
               <div>
-                <h4 className="text-xs font-semibold text-slate-200 uppercase tracking-wider">
+                <h4 className="text-xs font-bold text-slate-200 uppercase tracking-wider">
                   {t.stampPlacementGroup}
                 </h4>
-                <p className="text-[11px] text-slate-400">
+                <p className="text-[11px] text-slate-400 mt-0.5">
                   {t.stampPlacementDesc}
                 </p>
               </div>
             </div>
 
             {/* Sub-block A: Position Selector */}
-            <div className="space-y-2">
-              <label className="text-xs font-medium text-slate-300 flex items-center justify-between">
+            <div className="space-y-2.5">
+              <div className="flex items-center justify-between text-xs font-medium text-slate-300">
                 <span>{t.stampPosition}</span>
-                <span className="text-[10px] text-indigo-400 font-medium font-mono">
+                <span className="text-[11px] text-indigo-400 font-mono font-semibold bg-indigo-500/10 px-2 py-0.5 rounded border border-indigo-500/20">
                   {stampConfig.position}
                 </span>
-              </label>
-              <div className="grid grid-cols-2 gap-2">
+              </div>
+
+              <div className="grid grid-cols-2 gap-2.5">
                 {[
                   { id: 'bottom-right', label: t.posBottomRight, hint: '↘' },
                   { id: 'bottom-left', label: t.posBottomLeft, hint: '↙' },
@@ -279,14 +280,14 @@ export const StampPanel: React.FC<StampPanelProps> = ({
                     <button
                       key={pos.id}
                       onClick={() => handleUpdate({ position: pos.id as any })}
-                      className={`py-2 px-3 rounded-lg text-xs font-medium border text-left transition-all flex items-center justify-between active:scale-98 ${
+                      className={`py-2.5 px-3.5 rounded-xl text-xs font-medium border text-left transition-all flex items-center justify-between active:scale-98 ${
                         isActive
                           ? 'bg-indigo-600/20 border-indigo-500/90 text-indigo-200 ring-1 ring-indigo-500/30 shadow-sm'
                           : 'bg-slate-900/60 border-slate-800/80 text-slate-400 hover:border-slate-700 hover:text-slate-200'
                       }`}
                     >
-                      <span>{pos.label}</span>
-                      <span className={`text-[11px] font-mono ${isActive ? 'text-indigo-300 font-bold' : 'text-slate-500'}`}>
+                      <span className="truncate">{pos.label}</span>
+                      <span className={`text-[12px] font-mono ml-1.5 shrink-0 ${isActive ? 'text-indigo-300 font-bold' : 'text-slate-500'}`}>
                         {pos.hint}
                       </span>
                     </button>
@@ -295,18 +296,19 @@ export const StampPanel: React.FC<StampPanelProps> = ({
               </div>
             </div>
 
-            {/* Minimal Sub-divider */}
-            <div className="border-t border-slate-800/60 my-1" />
+            {/* Minimal Sub-divider with clean margins */}
+            <div className="border-t border-slate-800/80 my-2" />
 
             {/* Sub-block B: Apply To (Target Pages) */}
-            <div className="space-y-2">
-              <label className="text-xs font-medium text-slate-300 flex items-center justify-between">
+            <div className="space-y-2.5">
+              <div className="flex items-center justify-between text-xs font-medium text-slate-300">
                 <span>{t.stampTargetPages}</span>
-                <span className="text-[10px] text-emerald-400 font-medium font-mono">
+                <span className="text-[11px] text-emerald-400 font-mono font-semibold bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
                   {stampConfig.targetPages}
                 </span>
-              </label>
-              <div className="grid grid-cols-2 gap-2">
+              </div>
+
+              <div className="grid grid-cols-2 gap-2.5">
                 {[
                   { id: 'all-documents', label: t.pagesAllDocs },
                   { id: 'all-pages', label: t.pagesAll },
@@ -318,14 +320,14 @@ export const StampPanel: React.FC<StampPanelProps> = ({
                     <button
                       key={target.id}
                       onClick={() => handleUpdate({ targetPages: target.id as any })}
-                      className={`py-2 px-3 rounded-lg text-xs font-medium border text-left transition-all flex items-center justify-between active:scale-98 ${
+                      className={`py-2.5 px-3.5 rounded-xl text-xs font-medium border text-left transition-all flex items-center justify-between active:scale-98 ${
                         isActive
                           ? 'bg-emerald-600/20 border-emerald-500/90 text-emerald-200 ring-1 ring-emerald-500/30 shadow-sm'
                           : 'bg-slate-900/60 border-slate-800/80 text-slate-400 hover:border-slate-700 hover:text-slate-200'
                       }`}
                     >
                       <span className="truncate">{target.label}</span>
-                      {isActive && <Check className="w-3 h-3 text-emerald-400 shrink-0 ml-1" />}
+                      {isActive && <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0 ml-1.5" />}
                     </button>
                   );
                 })}
@@ -335,53 +337,55 @@ export const StampPanel: React.FC<StampPanelProps> = ({
           </div>
 
           {/* Section 2: Appearance & Dimensions (Opacity and Size) - 4 cols */}
-          <div className="lg:col-span-4 rounded-xl border border-slate-800/90 bg-slate-950/40 p-4.5 flex flex-col justify-between space-y-4 shadow-sm">
+          <div className="lg:col-span-4 rounded-2xl border border-slate-800/90 bg-slate-950/40 p-5 sm:p-6 flex flex-col justify-between space-y-5 shadow-sm">
             
             {/* Section Header */}
-            <div className="flex items-center gap-2 pb-2.5 border-b border-slate-800/70">
-              <div className="p-1.5 rounded-lg bg-sky-500/10 text-sky-400 border border-sky-500/20">
-                <Sliders className="w-3.5 h-3.5" />
+            <div className="flex items-center gap-2.5 pb-3 border-b border-slate-800/70">
+              <div className="p-2 rounded-xl bg-sky-500/10 text-sky-400 border border-sky-500/20">
+                <Sliders className="w-4 h-4" />
               </div>
               <div>
-                <h4 className="text-xs font-semibold text-slate-200 uppercase tracking-wider">
+                <h4 className="text-xs font-bold text-slate-200 uppercase tracking-wider">
                   {t.stampAppearanceGroup}
                 </h4>
-                <p className="text-[11px] text-slate-400">
+                <p className="text-[11px] text-slate-400 mt-0.5">
                   {t.stampAppearanceDesc}
                 </p>
               </div>
             </div>
 
             {/* Sub-block A: Opacity Slider & Presets */}
-            <div className="space-y-2">
-              <div className="flex items-center justify-between text-xs font-medium">
-                <span className="text-slate-300">{t.stampOpacity}</span>
-                <span className="px-2 py-0.5 rounded bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 font-mono text-[11px] font-semibold">
+            <div className="space-y-3">
+              <div className="flex items-center justify-between text-xs font-medium text-slate-300">
+                <span>{t.stampOpacity}</span>
+                <span className="px-2.5 py-0.5 rounded-lg bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 font-mono text-[11px] font-semibold">
                   {Math.round(stampConfig.opacity * 100)}%
                 </span>
               </div>
 
               {/* Slider Track */}
-              <input
-                type="range"
-                min="0.25"
-                max="1.0"
-                step="0.05"
-                value={stampConfig.opacity}
-                onChange={e => handleUpdate({ opacity: parseFloat(e.target.value) })}
-                className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-500"
-              />
+              <div className="px-1 py-1">
+                <input
+                  type="range"
+                  min="0.25"
+                  max="1.0"
+                  step="0.05"
+                  value={stampConfig.opacity}
+                  onChange={e => handleUpdate({ opacity: parseFloat(e.target.value) })}
+                  className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-500"
+                />
+              </div>
 
               {/* Quick Presets */}
-              <div className="flex items-center justify-between gap-1 pt-1">
+              <div className="grid grid-cols-4 gap-2 pt-1">
                 {opacityPresets.map(val => (
                   <button
                     key={val}
                     onClick={() => handleUpdate({ opacity: val })}
-                    className={`flex-1 py-1 text-[10px] font-mono rounded border transition-all ${
+                    className={`py-1.5 text-[11px] font-mono rounded-lg border transition-all text-center ${
                       Math.abs(stampConfig.opacity - val) < 0.02
-                        ? 'bg-indigo-500/20 border-indigo-500/60 text-indigo-300 font-bold'
-                        : 'bg-slate-900/60 border-slate-800 text-slate-400 hover:border-slate-700 hover:text-slate-200'
+                        ? 'bg-indigo-500/20 border-indigo-500/80 text-indigo-300 font-bold shadow-sm'
+                        : 'bg-slate-900/70 border-slate-800 text-slate-400 hover:border-slate-700 hover:text-slate-200'
                     }`}
                   >
                     {Math.round(val * 100)}%
@@ -390,39 +394,41 @@ export const StampPanel: React.FC<StampPanelProps> = ({
               </div>
             </div>
 
-            {/* Minimal Sub-divider */}
-            <div className="border-t border-slate-800/60 my-1" />
+            {/* Minimal Sub-divider with clean margins */}
+            <div className="border-t border-slate-800/80 my-2" />
 
             {/* Sub-block B: Size Slider & Presets */}
-            <div className="space-y-2">
-              <div className="flex items-center justify-between text-xs font-medium">
-                <span className="text-slate-300">{t.stampSize}</span>
-                <span className="px-2 py-0.5 rounded bg-sky-500/10 border border-sky-500/20 text-sky-300 font-mono text-[11px] font-semibold">
+            <div className="space-y-3">
+              <div className="flex items-center justify-between text-xs font-medium text-slate-300">
+                <span>{t.stampSize}</span>
+                <span className="px-2.5 py-0.5 rounded-lg bg-sky-500/10 border border-sky-500/20 text-sky-300 font-mono text-[11px] font-semibold">
                   {stampConfig.width} pt
                 </span>
               </div>
 
               {/* Slider Track */}
-              <input
-                type="range"
-                min="40"
-                max="130"
-                step="5"
-                value={stampConfig.width}
-                onChange={e => handleUpdate({ width: parseInt(e.target.value) })}
-                className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-sky-500"
-              />
+              <div className="px-1 py-1">
+                <input
+                  type="range"
+                  min="40"
+                  max="130"
+                  step="5"
+                  value={stampConfig.width}
+                  onChange={e => handleUpdate({ width: parseInt(e.target.value) })}
+                  className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-sky-500"
+                />
+              </div>
 
               {/* Quick Presets */}
-              <div className="flex items-center justify-between gap-1 pt-1">
+              <div className="grid grid-cols-4 gap-2 pt-1">
                 {sizePresets.map(val => (
                   <button
                     key={val}
                     onClick={() => handleUpdate({ width: val })}
-                    className={`flex-1 py-1 text-[10px] font-mono rounded border transition-all ${
+                    className={`py-1.5 text-[11px] font-mono rounded-lg border transition-all text-center ${
                       stampConfig.width === val
-                        ? 'bg-sky-500/20 border-sky-500/60 text-sky-300 font-bold'
-                        : 'bg-slate-900/60 border-slate-800 text-slate-400 hover:border-slate-700 hover:text-slate-200'
+                        ? 'bg-sky-500/20 border-sky-500/80 text-sky-300 font-bold shadow-sm'
+                        : 'bg-slate-900/70 border-slate-800 text-slate-400 hover:border-slate-700 hover:text-slate-200'
                     }`}
                   >
                     {val}pt
